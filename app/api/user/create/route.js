@@ -41,6 +41,21 @@ export async function POST(request) {
 
         let finalBalance = 0;
 
+        let summaryData = withMockData ? {
+            totalBalance: 8690.17,        // Final running balance after all transactions
+            monthlyIncome: 4950.00,       // Average monthly income (14950 total / 3 months)
+            monthlySpent: 2086.61,        // Average monthly spending (6259.83 total / 3 months)
+            yearlyIncome: 14950.00,       // Total income from all transactions
+            yearlySpent: 6259.83          // Total spending from all transactions
+        } :
+            {
+                totalBalance: 0,
+                monthlyIncome: 0,
+                monthlySpent: 0,
+                yearlyIncome: 0,
+                yearlySpent: 0
+            };
+
         // Add mock transactions if requested
         if (withMockData) {
             const { transactions, finalBalance: mockBalance } = prepareMockTransactions(newUser._id);
@@ -51,14 +66,12 @@ export async function POST(request) {
             }));
 
             await db.collection('transactions').insertMany(transactionsWithIds);
-            finalBalance = mockBalance;
         }
 
         return NextResponse.json({
             success: true,
             userId: newUser._id.toString(),
-            user: newUser,
-            currentBalance: finalBalance,
+            summaryData: summaryData,
             message: withMockData ?
                 'User created with mock data' : 'User created successfully'
         });

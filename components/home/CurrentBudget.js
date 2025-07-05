@@ -40,7 +40,7 @@ const CurrentBudget = () => {
 
     // Get spending for current month by category
     transactions
-        .filter(tx => {
+        ?.filter(tx => {
             const txDate = new Date(tx.date);
             return txDate.getMonth() === currentMonth &&
                 txDate.getFullYear() === currentYear &&
@@ -136,8 +136,8 @@ const CurrentBudget = () => {
                                     {item.category}
                                 </span>
                                 <span className={`text-sm ${isOverBudget
-                                        ? 'text-red-600 dark:text-red-400 font-semibold'
-                                        : 'text-gray-500 dark:text-gray-400'
+                                    ? 'text-red-600 dark:text-red-400 font-semibold'
+                                    : 'text-gray-500 dark:text-gray-400'
                                     }`}>
                                     {isOverBudget
                                         ? `${formatCurrency(item.spent - item.budget)} over`
@@ -148,8 +148,8 @@ const CurrentBudget = () => {
                             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div
                                     className={`h-2 rounded-full transition-all ${isOverBudget
-                                            ? 'bg-red-500 dark:bg-red-400'
-                                            : item.color
+                                        ? 'bg-red-500 dark:bg-red-400'
+                                        : item.color
                                         }`}
                                     style={{ width: `${Math.min(percentage, 100)}%` }}
                                 ></div>

@@ -59,7 +59,7 @@ const getSummaryAggregation = (userId) => {
                                     { $lt: ["$amount", 0] }
                                 ]
                             },
-                            { $abs: "$amount" }, // Convert negative to positive
+                            { $abs: "$amount" },
                             0
                         ]
                     }
@@ -91,19 +91,18 @@ const getSummaryAggregation = (userId) => {
                                     { $lt: ["$amount", 0] }
                                 ]
                             },
-                            { $abs: "$amount" }, // Convert negative to positive
+                            { $abs: "$amount" },
                             0
                         ]
                     }
-                },
-
+                }
             }
         },
 
-        // Project final result with calculated fields
+        // Round financial values to 2 decimal places
         {
             $project: {
-                totalBalance: { $ifNull: ["$totalBalance", 0] },
+                totalBalance: { $round: ["$totalBalance", 2] },
                 monthlyIncome: { $round: ["$monthlyIncome", 2] },
                 monthlySpent: { $round: ["$monthlySpent", 2] },
                 yearlyIncome: { $round: ["$yearlyIncome", 2] },
@@ -140,25 +139,31 @@ export async function GET(request, { params }) {
             );
         }
 
-
         const result = await db.collection('transactions')
             .aggregate(getSummaryAggregation(userId))
             .toArray();
 
-
         return NextResponse.json({
             success: true,
             user: user,
-            categories: user.categories,
-            summaryData: result[0],
+            categories: user.categories || [],
+            summaryData: result[0] || {
+                totalBalance: 0,
+                monthlyIncome: 0,
+                monthlySpent: 0,
+                yearlyIncome: 0,
+                yearlySpent: 0
+            },
             budgetData: {
                 monthlyBudget: user.monthlyBudget || {
                     enabled: false,
+                    totalBudget: 0,  // Include totalBudget
                     autoRenew: false,
                     categories: {}
                 },
                 yearlyBudget: user.yearlyBudget || {
                     enabled: false,
+                    totalBudget: 0,  // Include totalBudget
                     autoRenew: false,
                     categories: {}
                 }

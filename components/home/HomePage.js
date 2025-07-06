@@ -7,6 +7,7 @@ import SummaryCard from './SummaryCard';
 import AddTransactionDialog from './AddTransactionDialog';
 import MonthlyAnalysis from './MonthlyAnalysis';
 import CurrentBudget from './CurrentBudget';
+import LoadingScreen from '@/components/ui/LoadingScreen';
 
 const HomePage = () => {
     const {
@@ -22,39 +23,28 @@ const HomePage = () => {
 
     // Initialize user on page load
     useEffect(() => {
-        initializeUser();
+        initializeUser('/'); // Pass current path for proper redirect handling
         setNavigationItems([
             { name: 'Dashboard', href: '/', active: true },
             { name: 'Transactions', href: '/transactions', active: false },
-            { name: 'Analytics', href: '/analytics', active: false },
-            { name: 'Budgets', href: '/budgets', active: false },
+            { name: 'Budgets', href: '/budget', active: false },
         ]);
     }, [initializeUser]);
 
     // Loading state - show until we have user data OR need to show onboarding
     if (loading.user || (!user && !showOnboarding)) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="relative">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 dark:border-blue-800 mx-auto mb-6"></div>
-                        <div className="absolute inset-0 animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 mx-auto"></div>
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Loading Zentra Finance
-                    </h2>
-                    <p className="text-gray-500 dark:text-gray-400">
-                        Preparing your financial dashboard...
-                    </p>
-                </div>
-            </div>
+            <LoadingScreen 
+                title="Loading Zentra Finance"
+                description="Preparing your financial dashboard..."
+            />
         );
     }
 
     // Onboarding modal
     if (showOnboarding) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
 
                 <div className="min-h-screen flex items-center justify-center p-6">
                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-10 max-w-lg w-full">
@@ -108,7 +98,7 @@ const HomePage = () => {
 
     // Main dashboard
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
 
             <div className="w-[90%] mx-auto px-6 lg:px-8 py-8">
 

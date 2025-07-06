@@ -3,32 +3,28 @@
 import { useState, useEffect } from 'react';
 import { Moon, Sun, Bell, Settings, User, Search, Menu, X, ChevronDown } from 'lucide-react';
 import useFinanceStore from '@/stores/useFinanceStore';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
-    const [darkMode, setDarkMode] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
-    const { navigationItems, setNavigationItems } = useFinanceStore();
+    const {
+        navigationItems,
+        setNavigationItems,
+        theme,
+        themeInitialized,
+        initializeTheme,
+        toggleTheme
+    } = useFinanceStore();
 
+    const router = useRouter();
+
+    // Initialize theme on component mount
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            setDarkMode(true);
-            document.documentElement.classList.add('dark');
+        if (!themeInitialized) {
+            initializeTheme();
         }
-    }, []);
-
-    const toggleTheme = () => {
-        setDarkMode(!darkMode);
-        if (!darkMode) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    };
-
+    }, [themeInitialized, initializeTheme]);
 
     return (
         <>
@@ -61,8 +57,8 @@ const Header = () => {
                             {navigationItems.map((item) => (
                                 <a
                                     key={item.name}
-                                    href={item.href}
-                                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${item.active
+                                    onClick={() => router.push(item.href)}
+                                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${item.active
                                         ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
                                         : 'text-gray-600 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
                                         }`}
@@ -72,18 +68,6 @@ const Header = () => {
                             ))}
                         </nav>
 
-                        {/* Search Bar - Hidden on mobile */}
-                        <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-                            <div className="relative w-full">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search transactions, categories..."
-                                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                />
-                            </div>
-                        </div>
-
                         {/* Right Actions */}
                         <div className="flex items-center space-x-2 lg:space-x-3">
 
@@ -92,24 +76,19 @@ const Header = () => {
                                 <Search className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                             </button>
 
-                            {/* Notifications */}
-
                             {/* Theme Toggle */}
                             <button
                                 onClick={toggleTheme}
                                 className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                 aria-label="Toggle theme"
+                                disabled={!themeInitialized}
                             >
-                                {darkMode ? (
+                                {theme === 'dark' ? (
                                     <Sun className="h-5 w-5 text-yellow-500" />
                                 ) : (
                                     <Moon className="h-5 w-5 text-gray-600" />
                                 )}
                             </button>
-
-                            {/* Settings */}
-
-                            {/* Profile */}
 
                             {/* Mobile Menu Button */}
                             <button
@@ -133,8 +112,11 @@ const Header = () => {
                             {navigationItems.map((item) => (
                                 <a
                                     key={item.name}
-                                    href={item.href}
-                                    className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${item.active
+                                    onClick={() => {
+                                        router.push(item.href);
+                                        setShowMobileMenu(false);
+                                    }}
+                                    className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${item.active
                                         ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                                         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                                         }`}

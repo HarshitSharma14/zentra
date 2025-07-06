@@ -26,36 +26,23 @@ export const createUserSlice = (set, get) => ({
         yearlyIncome: 0,
         yearlySpent: 0
     },
-    budgetData: {
-        monthlyBudget: {
-            enabled: false,
-            autoRenew: false,
-            categories: {}
-        },
-        yearlyBudget: {
-            enabled: false,
-            autoRenew: false,
-            categories: {}
-        }
-    },
-
 
     // User actions
     setShowOnboarding: (show) => set({ showOnboarding: show }),
 
     setCategories: async (category) => {
-        set({ categories: [...get().categories, category] })
+        set({ categories: [...get().categories, category] });
         try {
             const response = await axios.post(`/api/user/${get().user}/category`, {
                 category
-            })
+            });
         } catch (error) {
             console.error('Error setting categories:', error);
         }
     },
 
     // Initialize user - minimal essential data only
-    initializeUser: async () => {
+    initializeUser: async (currentPath = '/') => {
         set((state) => ({
             loading: { ...state.loading, user: true, transactions: true }
         }));
@@ -67,7 +54,6 @@ export const createUserSlice = (set, get) => ({
                 // Fetch only essential user data + summary
                 const response = await axios.get(`/api/user/${userId}`);
 
-
                 if (response.data.success) {
                     console.log(response.data)
                     set({
@@ -75,13 +61,38 @@ export const createUserSlice = (set, get) => ({
                         showOnboarding: false,
                         categories: [...get().categories, ...response.data.categories],
                         summaryData: { ...get().summaryData, ...response.data.summaryData },
-                        budgetData: response.data.budgetData || get().budgetData,
+                        // Update budgets in the budget slice format
+                        budgets: {
+                            monthly: response.data.budgetData.monthlyBudget || {
+                                enabled: false,
+                                totalBudget: 0,
+                                autoRenew: false,
+                                categories: {}
+                            },
+                            yearly: response.data.budgetData.yearlyBudget || {
+                                enabled: false,
+                                totalBudget: 0,
+                                autoRenew: false,
+                                categories: {}
+                            }
+                        },
                         loading: { ...get().loading, user: false }
                     });
 
                     // Update summary data
                 } else {
                     localStorage.removeItem('ZentraFinanceUserId');
+                    // If we're not on home page, redirect to home for onboarding
+                    if (currentPath !== '/') {
+                        // Show brief loading state during redirect
+                        set({
+                            loading: { ...get().loading, user: true, transactions: false }
+                        });
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 100);
+                        return;
+                    }
                     set({
                         showOnboarding: true,
                         loading: { ...get().loading, user: false, transactions: false }
@@ -90,12 +101,34 @@ export const createUserSlice = (set, get) => ({
             } catch (error) {
                 console.error('Error fetching user:', error);
                 localStorage.removeItem('ZentraFinanceUserId');
+                // If we're not on home page, redirect to home for onboarding
+                if (currentPath !== '/') {
+                    // Show brief loading state during redirect
+                    set({
+                        loading: { ...get().loading, user: true, transactions: false }
+                    });
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 100);
+                    return;
+                }
                 set({
                     showOnboarding: true,
                     loading: { ...get().loading, user: false, transactions: false }
                 });
             }
         } else {
+            // If we're not on home page, redirect to home for onboarding
+            if (currentPath !== '/') {
+                // Show brief loading state during redirect
+                set({
+                    loading: { ...get().loading, user: true, transactions: false }
+                });
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 100);
+                return;
+            }
             set({
                 showOnboarding: true,
                 loading: { ...get().loading, user: false, transactions: false }
@@ -119,9 +152,24 @@ export const createUserSlice = (set, get) => ({
 
                 set({
                     user: response.data.userId,
-                    summaryData: response.data.summaryData,
                     showOnboarding: false,
-                    budgetData: response.data.budgetData || get().budgetData,
+                    categories: [...get().categories, ...response.data.categories],
+                    summaryData: { ...get().summaryData, ...response.data.summaryData },
+                    // Initialize empty budgets for new user
+                    budgets: {
+                        monthly: {
+                            enabled: false,
+                            totalBudget: 0,
+                            autoRenew: false,
+                            categories: {}
+                        },
+                        yearly: {
+                            enabled: false,
+                            totalBudget: 0,
+                            autoRenew: false,
+                            categories: {}
+                        }
+                    },
                     loading: { ...get().loading, user: false }
                 });
 
@@ -144,24 +192,6 @@ export const createUserSlice = (set, get) => ({
 
     // Update user data
     updateUser: (userData) => set({ user: userData }),
-
-    // Budget actions
-    updateBudgetData: (budgetData) => set({ budgetData }),
-
-    clearBudgetData: () => set({
-        budgetData: {
-            monthlyBudget: {
-                enabled: false,
-                autoRenew: false,
-                categories: {}
-            },
-            yearlyBudget: {
-                enabled: false,
-                autoRenew: false,
-                categories: {}
-            }
-        }
-    }),
 
     // Update summary data in frontend
     updateSummaryData: (transactionAmount, transactionDate, isDelete = false) => {
@@ -269,8 +299,16 @@ export const createUserSlice = (set, get) => ({
 
         // Clear all related data
         get().clearSummaryData();
-        get().clearTransactions();
-        get().clearBudgetData();
-        get().resetLoading();
+
+        // Safely call methods from other slices if they exist
+        if (get().clearTransactions) {
+            get().clearTransactions();
+        }
+        if (get().clearBudgets) {
+            get().clearBudgets();
+        }
+        if (get().resetLoading) {
+            get().resetLoading();
+        }
     }
 });

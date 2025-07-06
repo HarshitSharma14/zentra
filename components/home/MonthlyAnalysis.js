@@ -1,10 +1,12 @@
 // components/home/MonthlyAnalysis.js
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Loader, PieChart as PieIcon, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader, PieChart as PieIcon, BarChart3, ChevronLeft, ChevronRight, Target, ArrowRight } from 'lucide-react';
 import useFinanceStore from '@/stores/useFinanceStore';
 
 const MonthlyAnalysis = () => {
+  const router = useRouter();
   const {
     loading,
     fetchMonthlyAnalysisData,
@@ -78,10 +80,10 @@ const MonthlyAnalysis = () => {
 
   if (loading.monthlyAnalysis) {
     return (
-      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-8 h-full flex w-full items-center justify-center">
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-8 h-full flex w-full items-center justify-center transition-colors duration-300">
         <div className="text-center">
-          <Loader className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-500 dark:text-gray-400">Loading monthly analysis...</p>
+          <Loader className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400 mx-auto mb-4 transition-colors duration-300" />
+          <p className="text-gray-500 dark:text-gray-400 transition-colors duration-300">Loading monthly analysis...</p>
         </div>
       </div>
     );
@@ -201,6 +203,9 @@ const MonthlyAnalysis = () => {
           )}
         </div>
       </div>
+
+      {/* Budget Action Buttons - Added at the bottom */}
+
     </div>
   );
 };

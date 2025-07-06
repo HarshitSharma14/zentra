@@ -23,13 +23,12 @@ const TransactionHistoryPage = () => {
     useEffect(() => {
         try {
             if (!user) {
-                initializeUser();
+                initializeUser('/transactions'); // Pass current path for proper redirect handling
             }
             setNavigationItems([
                 { name: 'Dashboard', href: '/', active: false },
                 { name: 'Transactions', href: '/transactions', active: true },
-                { name: 'Analytics', href: '/analytics', active: false },
-                { name: 'Budgets', href: '/budgets', active: false },
+                { name: 'Budgets', href: '/budget', active: false },
             ]);
             if (user) {
                 fetchTransactions();

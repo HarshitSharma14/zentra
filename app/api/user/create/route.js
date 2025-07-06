@@ -1,5 +1,4 @@
-// Instead of create → update, do this:
-
+// app/api/user/create/route.js
 import { prepareMockTransactions, generateMonthlyBudget, generateYearlyBudget } from "@/lib/mockTransactions";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
@@ -12,9 +11,9 @@ export async function POST(request) {
         const client = await clientPromise;
         const db = client.db('zentra-finance');
 
-        // Generate budgets based on mock data
-        const monthlyBudget = withMockData ? generateMonthlyBudget() : {};
-        const yearlyBudget = withMockData ? generateYearlyBudget() : {};
+        // Generate budgets based on mock data - now includes totalBudget
+        const monthlyBudget = withMockData ? generateMonthlyBudget() : { categories: {}, totalBudget: 0 };
+        const yearlyBudget = withMockData ? generateYearlyBudget() : { categories: {}, totalBudget: 0 };
 
         // Prepare complete user object upfront
         const newUser = {
@@ -22,13 +21,15 @@ export async function POST(request) {
             categories: [],
             monthlyBudget: {
                 enabled: withMockData ? true : false,
+                totalBudget: monthlyBudget.totalBudget,  // Now includes totalBudget
                 autoRenew: withMockData ? true : false,
-                categories: monthlyBudget
+                categories: monthlyBudget.categories
             },
             yearlyBudget: {
                 enabled: withMockData ? true : false,
+                totalBudget: yearlyBudget.totalBudget,   // Now includes totalBudget
                 autoRenew: withMockData ? true : false,
-                categories: yearlyBudget
+                categories: yearlyBudget.categories
             }
         };
 
@@ -71,12 +72,12 @@ export async function POST(request) {
             success: true,
             userId: newUser._id.toString(),
             budgetData: {
-                monthlyBudget: monthlyBudget,
-                yearlyBudget: yearlyBudget
+                monthlyBudget: newUser.monthlyBudget,
+                yearlyBudget: newUser.yearlyBudget
             },
             summaryData: summaryData,
-            message: withMockData ?
-                'User created with mock data' : 'User created successfully'
+            categories: [],
+            message: withMockData ? 'User created with mock data' : 'User created successfully'
         });
 
     } catch (error) {

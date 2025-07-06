@@ -4,11 +4,11 @@ export const createUiSlice = (set, get) => ({
     showOnboarding: false,
     sidebarOpen: false,
     theme: 'light',
+    themeInitialized: false,
     navigationItems: [
         { name: 'Dashboard', href: '/', active: true },
         { name: 'Transactions', href: '/transactions', active: false },
-        { name: 'Analytics', href: '/analytics', active: false },
-        { name: 'Budgets', href: '/budgets', active: false },
+        { name: 'Budgets', href: '/budget', active: false },
     ],
 
     setNavigationItems: (items) => set({ navigationItems: items }),
@@ -30,11 +30,57 @@ export const createUiSlice = (set, get) => ({
 
     setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-    setTheme: (theme) => set({ theme }),
+    // Enhanced theme management
+    initializeTheme: () => {
+        if (typeof window === 'undefined') return; // Skip on server
 
-    toggleTheme: () => set((state) => ({
-        theme: state.theme === 'light' ? 'dark' : 'light'
-    })),
+        try {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+            set({
+                theme: isDark ? 'dark' : 'light',
+                themeInitialized: true
+            });
+
+            // Apply theme to document
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+            }
+        } catch (error) {
+            console.warn('Failed to initialize theme:', error);
+            set({
+                theme: 'light',
+                themeInitialized: true
+            });
+        }
+    },
+
+    setTheme: (theme) => {
+        if (typeof window === 'undefined') return;
+
+        set({ theme });
+        localStorage.setItem('theme', theme);
+
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+        }
+    },
+
+    toggleTheme: () => {
+        const { theme } = get();
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        get().setTheme(newTheme);
+    },
 
     // Loading state helpers
     setLoading: (key, value) => set((state) => ({

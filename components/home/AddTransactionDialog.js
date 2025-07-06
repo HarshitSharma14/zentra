@@ -220,7 +220,9 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         color: 'white',
                         position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        borderTopLeftRadius: 24,
+                        borderTopRightRadius: 24
                     }}>
                         <Box sx={{ position: 'relative', zIndex: 1 }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -271,8 +273,8 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
 
                     <DialogContent sx={{ p: 3 }}>
                         {/* Transaction Type Selection */}
-                        <Box mb={4}>
-                            <Typography variant="h6" gutterBottom fontWeight="bold" color="text.primary">
+                        <Box my={2}>
+                            <Typography variant="h5" gutterBottom fontWeight="bold" color="text.primary">
                                 Transaction Type
                             </Typography>
                             <Grid container spacing={2}>
@@ -320,7 +322,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                         </Box>
 
                         {/* Amount and Date */}
-                        <Grid container spacing={3} mb={3}>
+                        <Grid container spacing={3} >
                             <Grid item xs={12} sm={6}>
                                 <InputContainer>
                                     {/* <FloatingLabel
@@ -410,6 +412,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                     <TextField
                                         // label="Category"
                                         {...params}
+                                        placeholder="Select or create category"
                                         onFocus={() => setFocusedField('category')}
                                         onBlur={() => setFocusedField(null)}
                                         error={!!errors.category}
@@ -441,7 +444,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                 // }
                                 sx={{
                                     '& .MuiAutocomplete-inputRoot': {
-                                        paddingTop: '16px !important'
+                                        paddingTop: '10px !important'
                                     }
                                 }}
                             />

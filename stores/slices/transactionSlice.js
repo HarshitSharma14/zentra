@@ -15,11 +15,8 @@ export const createTransactionSlice = (set, get) => ({
             const response = await axios.post(`/api/transactions/${get().user}`, transactionData);
 
             if (response.data.success) {
-                // Update summary data in frontend immediately
-                get().updateSummaryData(transactionData.amount, transactionData.date);
-
-                // Refresh all transactions to get updated running balances
-                await get().fetchTransactions();
+                // Force refresh transactions and summary data since we added a transaction
+                await get().fetchTransactions(true);
 
                 set((state) => ({
                     loading: { ...state.loading, addingTransaction: false }
@@ -45,18 +42,8 @@ export const createTransactionSlice = (set, get) => ({
             const response = await axios.put(`/api/transactions/${get().user}/${transactionId}`, transactionData);
 
             if (response.data.success) {
-                // Update summary data in frontend immediately
-                if (originalTransaction) {
-                    get().updateSummaryDataForEdit(
-                        originalTransaction.amount,
-                        transactionData.amount,
-                        originalTransaction.date,
-                        transactionData.date
-                    );
-                }
-
-                // Refresh all transactions to get updated running balances
-                await get().fetchTransactions();
+                // Force refresh transactions and summary data since we updated a transaction
+                await get().fetchTransactions(true);
 
                 set((state) => ({
                     loading: { ...state.loading, updatingTransaction: false }
@@ -82,13 +69,8 @@ export const createTransactionSlice = (set, get) => ({
             const response = await axios.delete(`/api/transactions/${get().user}/${transactionId}`);
 
             if (response.data.success) {
-                // Update summary data in frontend immediately
-                if (transactionToDelete) {
-                    get().updateSummaryData(transactionToDelete.amount, transactionToDelete.date, true);
-                }
-
-                // Refresh all transactions to get updated running balances
-                await get().fetchTransactions();
+                // Force refresh transactions and summary data since we deleted a transaction
+                await get().fetchTransactions(true);
 
                 set((state) => ({
                     loading: { ...state.loading, deletingTransaction: false }
@@ -105,7 +87,19 @@ export const createTransactionSlice = (set, get) => ({
         }
     },
 
-    fetchTransactions: async () => {
+    fetchTransactions: async (forceRefresh = false) => {
+        // Prevent redundant calls if already loading
+        if (get().loading.transactions) {
+            return;
+        }
+
+        // Check if data is fresh and we don't need to refresh
+        const state = get();
+        if (!forceRefresh && state.lastTransactionsFetch && get().isDataFresh(state.lastTransactionsFetch)) {
+            console.log('Transactions data is fresh, skipping fetch');
+            return;
+        }
+
         try {
             set((state) => ({
                 loading: { ...state.loading, transactions: true }
@@ -118,8 +112,12 @@ export const createTransactionSlice = (set, get) => ({
 
                 set((state) => ({
                     transactions: newTransactions,
+                    lastTransactionsFetch: Date.now(), // Track freshness
                     loading: { ...state.loading, transactions: false }
                 }));
+
+                // Refresh summary data since transactions changed
+                get().refreshSummaryIfNeeded(true);
             }
         } catch (error) {
             console.error('Error fetching transactions:', error);

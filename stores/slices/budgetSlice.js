@@ -19,7 +19,19 @@ export const createBudgetSlice = (set, get) => ({
     },
 
     // Actions
-    fetchBudgets: async () => {
+    fetchBudgets: async (forceRefresh = false) => {
+        // Prevent redundant calls if already loading
+        if (get().loading.budgets) {
+            return;
+        }
+
+        // Check if data is fresh and we don't need to refresh
+        const state = get();
+        if (!forceRefresh && state.lastBudgetsFetch && get().isDataFresh(state.lastBudgetsFetch)) {
+            console.log('Budget data is fresh, skipping fetch');
+            return;
+        }
+
         try {
             set((state) => ({
                 loading: { ...state.loading, budgets: true }
@@ -30,6 +42,7 @@ export const createBudgetSlice = (set, get) => ({
             if (response.data.success) {
                 set((state) => ({
                     budgets: response.data.budgets,
+                    lastBudgetsFetch: Date.now(), // Track freshness
                     loading: { ...state.loading, budgets: false }
                 }));
             } else {

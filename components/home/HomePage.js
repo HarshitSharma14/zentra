@@ -14,12 +14,16 @@ const HomePage = () => {
         user,
         loading,
         showOnboarding,
+        summaryData,
         initializeUser,
         createUser,
         setNavigationItems
     } = useFinanceStore();
 
     const [showAddTransaction, setShowAddTransaction] = useState(false);
+
+    // Debug log to check summary data
+    console.log('HomePage - Summary Data:', summaryData);
 
     // Initialize user on page load
     useEffect(() => {

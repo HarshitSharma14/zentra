@@ -105,7 +105,7 @@ const BudgetPage = () => {
         if (!summary) {
             // No budget configured
             return (
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl p-6 lg:p-8">
+                <div className="bg-white/80 w-[85%] dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-2xl p-6 lg:p-8">
                     <div className="text-center py-12">
                         <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Target className="h-8 w-8 text-gray-400" />

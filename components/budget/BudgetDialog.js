@@ -291,7 +291,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                         }} />
                     </DialogTitle>
 
-                    <DialogContent sx={{ p: 3, maxHeight: '70vh', overflowY: 'auto' }}>
+                    <DialogContent sx={{ p: 3, mt: 3, maxHeight: '70vh', overflowY: 'auto' }}>
                         {/* Total Budget */}
                         <Box mb={4}>
                             <Typography variant="h6" gutterBottom fontWeight="bold" color="text.primary">
@@ -625,7 +625,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                         </Box>
                     </DialogContent>
 
-                    <DialogActions sx={{ p: 3, pt: 0 }}>
+                    <DialogActions sx={{ p: 3, pt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <Button

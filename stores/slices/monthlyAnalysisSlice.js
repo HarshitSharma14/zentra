@@ -9,11 +9,28 @@ export const createMonthlyAnalysisSlice = (set, get) => ({
     },
 
     // Actions
-    fetchMonthlyAnalysisData: async (month = null, year = null) => {
+    fetchMonthlyAnalysisData: async (month = null, year = null, forceRefresh = false) => {
         const { user } = get();
 
         if (!user) {
             console.error('No user ID available for fetching monthly analysis');
+            return;
+        }
+
+        // Prevent redundant calls if already loading
+        if (get().loading.monthlyAnalysis) {
+            return;
+        }
+
+        // Create cache key for this specific month/year
+        const cacheKey = `${month || 'current'}-${year || 'current'}`;
+        const state = get();
+
+        // Check if data is fresh and we don't need to refresh
+        if (!forceRefresh && state.lastMonthlyAnalysisFetch &&
+            state.lastMonthlyAnalysisCacheKey === cacheKey &&
+            get().isDataFresh(state.lastMonthlyAnalysisFetch)) {
+            console.log('Monthly analysis data is fresh, skipping fetch');
             return;
         }
 
@@ -48,6 +65,8 @@ export const createMonthlyAnalysisSlice = (set, get) => ({
                         pieChart: result.data.pieChart || [],
                         barChart: result.data.barChart || [],
                     },
+                    lastMonthlyAnalysisFetch: Date.now(), // Track freshness
+                    lastMonthlyAnalysisCacheKey: cacheKey, // Track what data we cached
                     loading: {
                         ...state.loading,
                         monthlyAnalysis: false

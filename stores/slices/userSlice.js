@@ -41,26 +41,58 @@ export const createUserSlice = (set, get) => ({
         }
     },
 
+    // Data freshness utilities
+    isDataFresh: (lastFetch, maxAgeMs = 60000) => { // 1 minute default
+        return lastFetch && (Date.now() - lastFetch) < maxAgeMs;
+    },
+
+    // Refresh summary data if stale
+    refreshSummaryIfNeeded: async (forceRefresh = false) => {
+        const state = get();
+
+        if (!state.user) return;
+
+        if (forceRefresh || !get().isDataFresh(state.lastUserDataFetch)) {
+            try {
+                const response = await axios.get(`/api/user/${state.user}`);
+                if (response.data.success) {
+                    set({
+                        summaryData: response.data.summaryData,
+                        lastUserDataFetch: Date.now()
+                    });
+                }
+            } catch (error) {
+                console.error('Error refreshing summary data:', error);
+            }
+        }
+    },
+
     // Initialize user - minimal essential data only
     initializeUser: async (currentPath = '/') => {
+        // Prevent redundant calls if already loading
+        if (get().loading.user) {
+            return;
+        }
+
         set((state) => ({
-            loading: { ...state.loading, user: true, transactions: true }
+            loading: { ...state.loading, user: true }
         }));
 
         const userId = localStorage.getItem('ZentraFinanceUserId');
 
         if (userId) {
             try {
-                // Fetch only essential user data + summary
+                // Fetch essential user data + fresh summary
                 const response = await axios.get(`/api/user/${userId}`);
 
                 if (response.data.success) {
-                    console.log(response.data)
+                    console.log('User data loaded:', response.data);
                     set({
                         user: userId,
                         showOnboarding: false,
                         categories: [...get().categories, ...response.data.categories],
-                        summaryData: { ...get().summaryData, ...response.data.summaryData },
+                        summaryData: response.data.summaryData, // Use server-calculated summary
+                        lastUserDataFetch: Date.now(), // Track freshness
                         // Update budgets in the budget slice format
                         budgets: {
                             monthly: response.data.budgetData.monthlyBudget || {
@@ -78,15 +110,12 @@ export const createUserSlice = (set, get) => ({
                         },
                         loading: { ...get().loading, user: false }
                     });
-
-                    // Update summary data
                 } else {
                     localStorage.removeItem('ZentraFinanceUserId');
                     // If we're not on home page, redirect to home for onboarding
                     if (currentPath !== '/') {
-                        // Show brief loading state during redirect
                         set({
-                            loading: { ...get().loading, user: true, transactions: false }
+                            loading: { user: true, transactions: false, budgets: false, monthlyAnalysis: false }
                         });
                         setTimeout(() => {
                             window.location.href = '/';
@@ -95,7 +124,7 @@ export const createUserSlice = (set, get) => ({
                     }
                     set({
                         showOnboarding: true,
-                        loading: { ...get().loading, user: false, transactions: false }
+                        loading: { user: false, transactions: false, budgets: false, monthlyAnalysis: false }
                     });
                 }
             } catch (error) {
@@ -103,9 +132,8 @@ export const createUserSlice = (set, get) => ({
                 localStorage.removeItem('ZentraFinanceUserId');
                 // If we're not on home page, redirect to home for onboarding
                 if (currentPath !== '/') {
-                    // Show brief loading state during redirect
                     set({
-                        loading: { ...get().loading, user: true, transactions: false }
+                        loading: { user: true, transactions: false, budgets: false, monthlyAnalysis: false }
                     });
                     setTimeout(() => {
                         window.location.href = '/';
@@ -114,15 +142,14 @@ export const createUserSlice = (set, get) => ({
                 }
                 set({
                     showOnboarding: true,
-                    loading: { ...get().loading, user: false, transactions: false }
+                    loading: { user: false, transactions: false, budgets: false, monthlyAnalysis: false }
                 });
             }
         } else {
             // If we're not on home page, redirect to home for onboarding
             if (currentPath !== '/') {
-                // Show brief loading state during redirect
                 set({
-                    loading: { ...get().loading, user: true, transactions: false }
+                    loading: { user: true, transactions: false, budgets: false, monthlyAnalysis: false }
                 });
                 setTimeout(() => {
                     window.location.href = '/';
@@ -131,7 +158,7 @@ export const createUserSlice = (set, get) => ({
             }
             set({
                 showOnboarding: true,
-                loading: { ...get().loading, user: false, transactions: false }
+                loading: { user: false, transactions: false, budgets: false, monthlyAnalysis: false }
             });
         }
     },

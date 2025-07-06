@@ -10,16 +10,19 @@ const CurrentBudget = () => {
         budgets,  // Fix: changed from budgetData to budgets
         fetchTransactions,
         getBudgetSummary,
+        fetchBudgets,
         getSpentAmounts
     } = useFinanceStore();
     const [isYearlyView, setIsYearlyView] = useState(false);
 
-    // Fetch transactions when component mounts
+    // Fetch transactions and budgets when component mounts
     useEffect(() => {
-        if (user && transactions.length === 0) {
+        if (user) {
+            fetchBudgets();
             fetchTransactions();
         }
-    }, [user, fetchTransactions, transactions.length]);
+    }, [user, fetchBudgets, fetchTransactions]);
+
     const router = useRouter();
     // If no user, show placeholder
     if (!user) {
@@ -111,8 +114,23 @@ const CurrentBudget = () => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
+
+    // Calculate days remaining in current month
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysRemaining = daysInMonth - currentDate.getDate();
+    const daysRemainingInMonth = daysInMonth - currentDate.getDate();
+
+    // Calculate days remaining in current year
+    const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999); // December 31st end of day
+    const daysRemainingInYear = Math.ceil((endOfYear - currentDate) / (1000 * 60 * 60 * 24));
+
+    // Helper function to get the appropriate days remaining
+    const getDaysRemaining = () => {
+        if (isYearlyView) {
+            return daysRemainingInYear;
+        } else {
+            return daysRemainingInMonth;
+        }
+    };
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-US', {
@@ -145,23 +163,23 @@ const CurrentBudget = () => {
                 <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
             </div>
 
-            <div className="mt-4 md:mt-6 w-[100%] py-4 border-t border-gray-200 dark:border-gray-600">
-                <div className="flex items-center justify-center w-[100%]">
-                    {/* Detailed Budget Button */}
-                    <button
-                        onClick={() => router.push('/budget')}
-                        className="group flex w-[100%] items-center justify-center space-x-2 px-4 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-300 transform hover:scale-105 shadow-button hover:shadow-button-hover mx-auto"
-                    >
-                        <BarChart3 className="h-4 w-4" />
-                        <span className="text-sm font-semibold">Detailed Budget</span>
-                        <ArrowRight className="h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />
-                    </button>
-                </div>
-            </div>
-
-            {/* Budget View Toggle */}
+            {/* Detailed Budget Button */}
             <div className="mb-6">
-                <div className="flex items-center mx-auto bg-muted rounded-xl p-1 shadow-card">
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        router.push('/budget');
+                    }}
+                    className="group flex w-full items-center justify-center space-x-2 px-4 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-300 transform hover:scale-105 shadow-button hover:shadow-button-hover"
+                >
+                    <BarChart3 className="h-4 w-4" />
+                    <span className="text-sm font-semibold">Detailed Budget</span>
+                    <ArrowRight className="h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />
+                </button>
+            </div>
+            {/* Budget View Toggle - Moved to top */}
+            <div className="mb-6">
+                <div className="flex items-center justify-center bg-muted rounded-xl p-1 shadow-card w-fit mx-auto">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -190,6 +208,7 @@ const CurrentBudget = () => {
                     </button>
                 </div>
             </div>
+
 
             {!isBudgetEnabled ? (
                 <div className="text-center py-8">
@@ -242,10 +261,7 @@ const CurrentBudget = () => {
                                         Days Remaining
                                     </p>
                                     <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                        {isYearlyView
-                                            ? Math.ceil((new Date(currentYear + 1, 0, 1) - currentDate) / (1000 * 60 * 60 * 24))
-                                            : daysRemaining
-                                        } days
+                                        {getDaysRemaining()} days
                                     </p>
                                 </div>
                             </div>

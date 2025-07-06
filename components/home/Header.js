@@ -36,8 +36,12 @@ const Header = () => {
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-3">
                                 <div className="relative">
-                                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg">
-                                        <span className="text-white font-bold text-lg lg:text-xl">Z</span>
+                                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+                                        <img
+                                            src="/logo.svg"
+                                            alt="Zentra Finance Logo"
+                                            className="w-full h-full object-contain"
+                                        />
                                     </div>
                                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
                                 </div>

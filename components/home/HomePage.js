@@ -34,7 +34,7 @@ const HomePage = () => {
     // Loading state - show until we have user data OR need to show onboarding
     if (loading.user || (!user && !showOnboarding)) {
         return (
-            <LoadingScreen 
+            <LoadingScreen
                 title="Loading Zentra Finance"
                 description="Preparing your financial dashboard..."
             />
@@ -56,7 +56,7 @@ const HomePage = () => {
                                 Welcome to Zentra Finance! 🎉
                             </h1>
                             <p className="text-gray-600 dark:text-gray-400 text-lg">
-                                Let's set up your personal finance tracker. Would you like to start with sample data to explore the features?
+                                Let&apos;s set up your personal finance tracker. Would you like to start with sample data to explore the features?
                             </p>
                         </div>
 

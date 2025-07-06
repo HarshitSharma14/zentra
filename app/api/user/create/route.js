@@ -1,5 +1,9 @@
 // app/api/user/create/route.js
-import { prepareMockTransactions, generateMonthlyBudget, generateYearlyBudget } from "@/lib/mockTransactions";
+import {
+    prepareMockTransactions,
+    generateMonthlyBudget,
+    generateYearlyBudget
+} from "@/lib/mockTransactions";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
@@ -11,73 +15,89 @@ export async function POST(request) {
         const client = await clientPromise;
         const db = client.db('zentra-finance');
 
-        // Generate budgets based on mock data - now includes totalBudget
-        const monthlyBudget = withMockData ? generateMonthlyBudget() : { categories: {}, totalBudget: 0 };
-        const yearlyBudget = withMockData ? generateYearlyBudget() : { categories: {}, totalBudget: 0 };
-
         // Prepare complete user object upfront
         const newUser = {
             _id: new ObjectId(),
-            categories: [],
-            monthlyBudget: {
-                enabled: withMockData ? true : false,
-                totalBudget: monthlyBudget.totalBudget,  // Now includes totalBudget
-                autoRenew: withMockData ? true : false,
-                categories: monthlyBudget.categories
-            },
-            yearlyBudget: {
-                enabled: withMockData ? true : false,
-                totalBudget: yearlyBudget.totalBudget,   // Now includes totalBudget
-                autoRenew: withMockData ? true : false,
-                categories: yearlyBudget.categories
-            }
+            categories: []
         };
 
-        // Single insert - no update needed
-        await db.collection('users').insertOne(newUser);
+        let summaryData = {
+            totalBalance: 0,
+            monthlyIncome: 0,
+            monthlySpent: 0,
+            yearlyIncome: 0,
+            yearlySpent: 0
+        };
 
-        let finalBalance = 0;
+        let monthlyBudget = {
+            enabled: false,
+            totalBudget: 0,
+            autoRenew: false,
+            categories: {}
+        };
 
-        let summaryData = withMockData ? {
-            totalBalance: 8690.17,        // Final running balance after all transactions
-            monthlyIncome: 5608.33,       // Average monthly income (16825 total / 3 months)
-            monthlySpent: 2711.61,        // Average monthly spending (8134.83 total / 3 months)
-            yearlyIncome: 16825.00,       // Total income from all transactions
-            yearlySpent: 8134.83          // Total spending from all transactions
-        } :
-            {
-                totalBalance: 0,
-                monthlyIncome: 0,
-                monthlySpent: 0,
-                yearlyIncome: 0,
-                yearlySpent: 0
+        let yearlyBudget = {
+            enabled: false,
+            totalBudget: 0,
+            autoRenew: false,
+            categories: {}
+        };
+
+        // Generate comprehensive mock data if requested
+        if (withMockData) {
+            // First, create transactions to analyze spending patterns
+            const mockResult = prepareMockTransactions(newUser._id);
+            const transactions = mockResult.transactions;
+
+            // Use calculated summary data from actual transactions
+            summaryData = mockResult.summaryData;
+
+            // Generate realistic budgets based on actual spending patterns
+            const monthlyBudgetData = generateMonthlyBudget(transactions);
+            const yearlyBudgetData = generateYearlyBudget(transactions);
+
+            monthlyBudget = {
+                enabled: true,
+                totalBudget: monthlyBudgetData.totalBudget,
+                autoRenew: true,
+                categories: monthlyBudgetData.categories
             };
 
-        // Add mock transactions if requested
-        if (withMockData) {
-            const { transactions, finalBalance: mockBalance } = prepareMockTransactions(newUser._id);
+            yearlyBudget = {
+                enabled: true,
+                totalBudget: yearlyBudgetData.totalBudget,
+                autoRenew: true,
+                categories: yearlyBudgetData.categories
+            };
 
+            // Add transactions to database with ObjectIds
             const transactionsWithIds = transactions.map(tx => ({
                 _id: new ObjectId(),
                 ...tx
             }));
 
             await db.collection('transactions').insertMany(transactionsWithIds);
-
-            // Update summary data with actual calculated balance
-            summaryData.totalBalance = mockBalance;
         }
+
+        // Complete user object with budget data
+        newUser.monthlyBudget = monthlyBudget;
+        newUser.yearlyBudget = yearlyBudget;
+
+        // Insert user into database
+        await db.collection('users').insertOne(newUser);
 
         return NextResponse.json({
             success: true,
             userId: newUser._id.toString(),
             budgetData: {
-                monthlyBudget: newUser.monthlyBudget,
-                yearlyBudget: newUser.yearlyBudget
+                monthlyBudget: monthlyBudget,
+                yearlyBudget: yearlyBudget
             },
             summaryData: summaryData,
             categories: [],
-            message: withMockData ? 'User created with mock data' : 'User created successfully'
+            message: withMockData
+                ? 'User created with comprehensive 75-day transaction history and realistic budgets'
+                : 'User created successfully'
         });
 
     } catch (error) {

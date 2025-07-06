@@ -1,6 +1,6 @@
 // Instead of create → update, do this:
 
-import { prepareMockTransactions } from "@/lib/mockTransactions";
+import { prepareMockTransactions, generateMonthlyBudget, generateYearlyBudget } from "@/lib/mockTransactions";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
@@ -12,6 +12,10 @@ export async function POST(request) {
         const client = await clientPromise;
         const db = client.db('zentra-finance');
 
+        // Generate budgets based on mock data
+        const monthlyBudget = withMockData ? generateMonthlyBudget() : {};
+        const yearlyBudget = withMockData ? generateYearlyBudget() : {};
+
         // Prepare complete user object upfront
         const newUser = {
             _id: new ObjectId(),
@@ -19,20 +23,12 @@ export async function POST(request) {
             monthlyBudget: {
                 enabled: withMockData ? true : false,
                 autoRenew: withMockData ? true : false,
-                categories: withMockData ? {
-                    'Food & Dining': 600,
-                    'Transportation': 300,
-                    'Bills & Utilities': 800,
-                    'Entertainment': 200,
-                    'Shopping': 400,
-                    'Healthcare': 250,
-                    'Other': 200
-                } : {}
+                categories: monthlyBudget
             },
             yearlyBudget: {
-                enabled: false,
-                autoRenew: false,
-                categories: {}
+                enabled: withMockData ? true : false,
+                autoRenew: withMockData ? true : false,
+                categories: yearlyBudget
             }
         };
 
@@ -43,10 +39,10 @@ export async function POST(request) {
 
         let summaryData = withMockData ? {
             totalBalance: 8690.17,        // Final running balance after all transactions
-            monthlyIncome: 4950.00,       // Average monthly income (14950 total / 3 months)
-            monthlySpent: 2086.61,        // Average monthly spending (6259.83 total / 3 months)
-            yearlyIncome: 14950.00,       // Total income from all transactions
-            yearlySpent: 6259.83          // Total spending from all transactions
+            monthlyIncome: 5608.33,       // Average monthly income (16825 total / 3 months)
+            monthlySpent: 2711.61,        // Average monthly spending (8134.83 total / 3 months)
+            yearlyIncome: 16825.00,       // Total income from all transactions
+            yearlySpent: 8134.83          // Total spending from all transactions
         } :
             {
                 totalBalance: 0,
@@ -66,11 +62,18 @@ export async function POST(request) {
             }));
 
             await db.collection('transactions').insertMany(transactionsWithIds);
+
+            // Update summary data with actual calculated balance
+            summaryData.totalBalance = mockBalance;
         }
 
         return NextResponse.json({
             success: true,
             userId: newUser._id.toString(),
+            budgetData: {
+                monthlyBudget: monthlyBudget,
+                yearlyBudget: yearlyBudget
+            },
             summaryData: summaryData,
             message: withMockData ?
                 'User created with mock data' : 'User created successfully'

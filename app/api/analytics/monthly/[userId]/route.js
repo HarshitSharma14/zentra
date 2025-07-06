@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 export async function GET(request, { params }) {
     try {
         const { userId } = await params;
+        const { searchParams } = new URL(request.url);
 
         if (!ObjectId.isValid(userId)) {
             return NextResponse.json(
@@ -17,16 +18,29 @@ export async function GET(request, { params }) {
         const client = await clientPromise;
         const db = client.db('zentra-finance');
 
-        // Current month start date
+        // Get month and year from query params, or use current date
         const now = new Date();
-        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const targetMonth = searchParams.get('month') ? parseInt(searchParams.get('month')) : now.getMonth();
+        const targetYear = searchParams.get('year') ? parseInt(searchParams.get('year')) : now.getFullYear();
 
-        // 1. PIE CHART - Category wise expenses this month
+        // Validate month and year
+        if (targetMonth < 0 || targetMonth > 11 || targetYear < 2000 || targetYear > 2100) {
+            return NextResponse.json(
+                { success: false, message: 'Invalid month or year parameters' },
+                { status: 400 }
+            );
+        }
+
+        // Target month start and end dates
+        const monthStart = new Date(targetYear, targetMonth, 1);
+        const monthEnd = new Date(targetYear, targetMonth + 1, 0, 23, 59, 59, 999);
+
+        // 1. PIE CHART - Category wise expenses for target month
         const categoryPipeline = [
             {
                 $match: {
                     userId: new ObjectId(userId),
-                    date: { $gte: monthStart },
+                    date: { $gte: monthStart, $lte: monthEnd },
                     amount: { $lt: 0 } // Only expenses
                 }
             },
@@ -41,12 +55,12 @@ export async function GET(request, { params }) {
             }
         ];
 
-        // 2. BAR CHART - Daily expenses this month
+        // 2. BAR CHART - Daily expenses for target month
         const dailyPipeline = [
             {
                 $match: {
                     userId: new ObjectId(userId),
-                    date: { $gte: monthStart },
+                    date: { $gte: monthStart, $lte: monthEnd },
                     amount: { $lt: 0 } // Only expenses
                 }
             },
@@ -76,7 +90,7 @@ export async function GET(request, { params }) {
         }));
 
         // Format daily data for bar chart (fill missing days with 0)
-        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
         const barChartData = [];
 
         for (let day = 1; day <= daysInMonth; day++) {

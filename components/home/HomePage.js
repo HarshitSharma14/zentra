@@ -130,13 +130,13 @@ const HomePage = () => {
                     />
                 )}
 
-                {/* Main Content Grid - Better spacing and height */}
-                <div className="flex w-[100%] flex-row gap-8 min-h-[600px]">
-                    <div className="flex w-[50%]">
+                {/* Main Content Grid - Responsive layout */}
+                <div className="flex w-[100%] flex-col xl:flex-row gap-4 md:gap-6 lg:gap-8 min-h-[500px] sm:min-h-[600px]">
+                    <div className="flex w-full xl:w-[50%]">
                         <MonthlyAnalysis />
                     </div>
-                    <div className="xl:col-span-3">
-                        {/* <CurrentBudget /> */}
+                    <div className="flex w-full xl:w-[50%]">
+                        <CurrentBudget />
                     </div>
                 </div>
             </div>

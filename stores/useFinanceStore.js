@@ -11,6 +11,9 @@ const useFinanceStore = create((set, get) => ({
         user: false,
         transactions: false,
         monthlyAnalysis: false,
+        addingTransaction: false,
+        updatingTransaction: false,
+        deletingTransaction: false,
         // Add other loading states as needed
     },
     ...createUserSlice(set, get),

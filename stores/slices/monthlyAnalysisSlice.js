@@ -9,7 +9,7 @@ export const createMonthlyAnalysisSlice = (set, get) => ({
     },
 
     // Actions
-    fetchMonthlyAnalysisData: async () => {
+    fetchMonthlyAnalysisData: async (month = null, year = null) => {
         const { user } = get();
 
         if (!user) {
@@ -26,7 +26,20 @@ export const createMonthlyAnalysisSlice = (set, get) => ({
         }));
 
         try {
-            const response = await axios.get(`/api/analytics/monthly/${user}`);
+            // Build URL with month/year parameters if provided
+            let url = `/api/analytics/monthly/${user}`;
+            const params = new URLSearchParams();
+
+            if (month !== null && year !== null) {
+                params.append('month', month.toString());
+                params.append('year', year.toString());
+            }
+
+            if (params.toString()) {
+                url += `?${params.toString()}`;
+            }
+
+            const response = await axios.get(url);
             const result = response.data;
 
             if (result.success) {

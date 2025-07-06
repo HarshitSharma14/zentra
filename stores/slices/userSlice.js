@@ -26,6 +26,18 @@ export const createUserSlice = (set, get) => ({
         yearlyIncome: 0,
         yearlySpent: 0
     },
+    budgetData: {
+        monthlyBudget: {
+            enabled: false,
+            autoRenew: false,
+            categories: {}
+        },
+        yearlyBudget: {
+            enabled: false,
+            autoRenew: false,
+            categories: {}
+        }
+    },
 
 
     // User actions
@@ -63,6 +75,7 @@ export const createUserSlice = (set, get) => ({
                         showOnboarding: false,
                         categories: [...get().categories, ...response.data.categories],
                         summaryData: { ...get().summaryData, ...response.data.summaryData },
+                        budgetData: response.data.budgetData || get().budgetData,
                         loading: { ...get().loading, user: false }
                     });
 
@@ -108,6 +121,7 @@ export const createUserSlice = (set, get) => ({
                     user: response.data.userId,
                     summaryData: response.data.summaryData,
                     showOnboarding: false,
+                    budgetData: response.data.budgetData || get().budgetData,
                     loading: { ...get().loading, user: false }
                 });
 
@@ -130,6 +144,120 @@ export const createUserSlice = (set, get) => ({
 
     // Update user data
     updateUser: (userData) => set({ user: userData }),
+
+    // Budget actions
+    updateBudgetData: (budgetData) => set({ budgetData }),
+
+    clearBudgetData: () => set({
+        budgetData: {
+            monthlyBudget: {
+                enabled: false,
+                autoRenew: false,
+                categories: {}
+            },
+            yearlyBudget: {
+                enabled: false,
+                autoRenew: false,
+                categories: {}
+            }
+        }
+    }),
+
+    // Update summary data in frontend
+    updateSummaryData: (transactionAmount, transactionDate, isDelete = false) => {
+        const currentDate = new Date();
+        const txDate = new Date(transactionDate);
+
+        // For balance: when deleting, reverse the transaction effect
+        const balanceChange = isDelete ? -transactionAmount : transactionAmount;
+
+        // Always update total balance
+        set((state) => ({
+            summaryData: {
+                ...state.summaryData,
+                totalBalance: state.summaryData.totalBalance + balanceChange
+            }
+        }));
+
+        // Update monthly data if transaction is in current month
+        if (txDate.getMonth() === currentDate.getMonth() &&
+            txDate.getFullYear() === currentDate.getFullYear()) {
+
+            set((state) => {
+                const newSummaryData = { ...state.summaryData };
+
+                // Determine if original transaction was income or expense
+                const isIncome = transactionAmount > 0;
+                const absAmount = Math.abs(transactionAmount);
+
+                if (isDelete) {
+                    // When deleting, remove from the appropriate category
+                    if (isIncome) {
+                        newSummaryData.monthlyIncome = Math.max(0, (newSummaryData.monthlyIncome || 0) - absAmount);
+                    } else {
+                        newSummaryData.monthlySpent = Math.max(0, (newSummaryData.monthlySpent || 0) - absAmount);
+                    }
+                } else {
+                    // When adding, add to the appropriate category
+                    if (isIncome) {
+                        newSummaryData.monthlyIncome = (newSummaryData.monthlyIncome || 0) + absAmount;
+                    } else {
+                        newSummaryData.monthlySpent = (newSummaryData.monthlySpent || 0) + absAmount;
+                    }
+                }
+
+                return { summaryData: newSummaryData };
+            });
+        }
+
+        // Update yearly data if transaction is in current year
+        if (txDate.getFullYear() === currentDate.getFullYear()) {
+            set((state) => {
+                const newSummaryData = { ...state.summaryData };
+
+                // Determine if original transaction was income or expense
+                const isIncome = transactionAmount > 0;
+                const absAmount = Math.abs(transactionAmount);
+
+                if (isDelete) {
+                    // When deleting, remove from the appropriate category
+                    if (isIncome) {
+                        newSummaryData.yearlyIncome = Math.max(0, (newSummaryData.yearlyIncome || 0) - absAmount);
+                    } else {
+                        newSummaryData.yearlySpent = Math.max(0, (newSummaryData.yearlySpent || 0) - absAmount);
+                    }
+                } else {
+                    // When adding, add to the appropriate category
+                    if (isIncome) {
+                        newSummaryData.yearlyIncome = (newSummaryData.yearlyIncome || 0) + absAmount;
+                    } else {
+                        newSummaryData.yearlySpent = (newSummaryData.yearlySpent || 0) + absAmount;
+                    }
+                }
+
+                return { summaryData: newSummaryData };
+            });
+        }
+    },
+
+    // Update summary data when editing a transaction
+    updateSummaryDataForEdit: (oldAmount, newAmount, oldDate, newDate) => {
+        // Remove the old transaction effect
+        get().updateSummaryData(oldAmount, oldDate, true);
+        // Add the new transaction effect
+        get().updateSummaryData(newAmount, newDate, false);
+    },
+
+    // Clear summary data
+    clearSummaryData: () => set({
+        summaryData: {
+            totalBalance: 0,
+            monthlyIncome: 0,
+            monthlySpent: 0,
+            yearlyIncome: 0,
+            yearlySpent: 0
+        }
+    }),
 
     // Logout user
     logoutUser: () => {

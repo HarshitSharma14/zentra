@@ -88,8 +88,8 @@ const FloatingLabel = styled(Typography)(({ focused, hasValue }) => ({
     zIndex: 1
 }));
 
-const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
-    const { user, summaryData, addTransaction, setCategories, loading, categories } = useFinanceStore();
+const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null }) => {
+    const { user, summaryData, addTransaction, updateTransaction, setCategories, loading, categories } = useFinanceStore();
 
     const [transactionForm, setTransactionForm] = useState({
         amount: '',
@@ -102,20 +102,35 @@ const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
     const [focusedField, setFocusedField] = useState(null);
     const [errors, setErrors] = useState({});
 
-    // Reset form when dialog opens
+    // Reset form when dialog opens or populate with edit data
     useEffect(() => {
         if (open) {
-            setTransactionForm({
-                amount: '',
-                category: '',
-                description: '',
-                date: new Date().toISOString().slice(0, 16),
-                type: 'expense'
-            });
+            if (editTransaction) {
+                // Populate form with existing transaction data
+                const transactionDate = new Date(editTransaction.date);
+                const formattedDate = transactionDate.toISOString().slice(0, 16);
+
+                setTransactionForm({
+                    amount: Math.abs(editTransaction.amount).toString(),
+                    category: editTransaction.category || '',
+                    description: editTransaction.description || '',
+                    date: formattedDate,
+                    type: editTransaction.amount > 0 ? 'income' : 'expense'
+                });
+            } else {
+                // Reset form for new transaction
+                setTransactionForm({
+                    amount: '',
+                    category: '',
+                    description: '',
+                    date: new Date().toISOString().slice(0, 16),
+                    type: 'expense'
+                });
+            }
             setErrors({});
             setFocusedField(null);
         }
-    }, [open]);
+    }, [open, editTransaction]);
 
     // Validation
     const validateForm = () => {
@@ -157,17 +172,25 @@ const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
                 date: transactionForm.date,
                 runningBalance: summaryData.totalBalance
             }
-            // console.log(transactionData)
 
-            // Add transaction
-            const success = await addTransaction(transactionData);
+            let result;
+            if (editTransaction) {
+                // Update existing transaction
+                result = await updateTransaction(editTransaction._id, transactionData, editTransaction);
+            } else {
+                // Add new transaction
+                result = await addTransaction(transactionData);
+            }
 
-            if (success) {
+            if (result.success) {
                 onSuccess?.();
                 onClose();
+            } else {
+                alert(`Failed to ${editTransaction ? 'update' : 'add'} transaction: ${result.message}`);
             }
         } catch (error) {
-            console.error('Error adding transaction:', error);
+            console.error(`Error ${editTransaction ? 'updating' : 'adding'} transaction:`, error);
+            alert(`Failed to ${editTransaction ? 'update' : 'add'} transaction`);
         }
     };
 
@@ -212,10 +235,10 @@ const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
                                     </Box>
                                     <Box>
                                         <Typography variant="h5" fontWeight="bold">
-                                            Add Transaction
+                                            {editTransaction ? 'Edit Transaction' : 'Add Transaction'}
                                         </Typography>
                                         <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                                            Track your income and expenses
+                                            {editTransaction ? 'Update your transaction details' : 'Track your income and expenses'}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -484,7 +507,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
                                     fullWidth
                                     variant="contained"
                                     onClick={handleSubmit}
-                                    disabled={!isFormValid || loading.addingTransaction}
+                                    disabled={!isFormValid || loading.addingTransaction || loading.updatingTransaction}
                                     sx={{
                                         py: 2,
                                         borderRadius: 3,
@@ -507,7 +530,9 @@ const AddTransactionDialog = ({ open, onClose, onSuccess }) => {
                                         }
                                     }}
                                 >
-                                    {loading.addingTransaction ? 'Adding...' : 'Add Transaction'}
+                                    {loading.addingTransaction ? 'Adding...' :
+                                        loading.updatingTransaction ? 'Updating...' :
+                                            editTransaction ? 'Update Transaction' : 'Add Transaction'}
                                 </Button>
                             </Grid>
                         </Grid>

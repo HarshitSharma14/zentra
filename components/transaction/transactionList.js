@@ -1,10 +1,11 @@
 // components/transactions/TransactionList.js
-import { useEffect, useMemo } from 'react';
-import { TrendingUp, TrendingDown, Clock, Plus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { TrendingUp, TrendingDown, Clock, Plus, Edit3, Trash2, MoreVertical } from 'lucide-react';
 import useFinanceStore from '@/stores/useFinanceStore';
 import { formatCurrency } from '@/utils/chartUtils';
 import { formatDateForDisplay, getRelativeTime } from '@/utils/dateUtils';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import AddTransactionDialog from '../home/AddTransactionDialog';
 
 const TransactionList = ({
     showHeader = true,
@@ -18,8 +19,14 @@ const TransactionList = ({
         hasMore,
         loading,
         fetchTransactions,
-        loadMoreTransactions
+        loadMoreTransactions,
+        updateTransaction,
+        deleteTransaction
     } = useFinanceStore();
+
+    const [editingTransaction, setEditingTransaction] = useState(null);
+    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
 
     const filteredTransactions = useMemo(() => {
         return transactions.filter(transaction => {
@@ -55,6 +62,34 @@ const TransactionList = ({
         if (diffHours < 24) return `${diffHours}h ago`;
         if (diffDays < 7) return `${diffDays}d ago`;
         return formatDate(dateString);
+    };
+
+    const handleEditTransaction = (transaction) => {
+        setEditingTransaction(transaction);
+        setShowEditDialog(true);
+    };
+
+    const handleDeleteTransaction = async (transaction) => {
+        if (window.confirm('Are you sure you want to delete this transaction?')) {
+            setDeletingId(transaction._id);
+            try {
+                const result = await deleteTransaction(transaction._id, transaction);
+                if (result.success) {
+                    // Transaction list will be automatically updated by the store
+                } else {
+                    alert('Failed to delete transaction: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to delete transaction');
+            } finally {
+                setDeletingId(null);
+            }
+        }
+    };
+
+    const handleEditSuccess = () => {
+        setShowEditDialog(false);
+        setEditingTransaction(null);
     };
 
     if (loading.transactions && transactions.length === 0) {
@@ -134,8 +169,6 @@ const TransactionList = ({
                                                 <div className="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
                                                     <Clock className="h-3 w-3 mr-1" />
                                                     <span>{getRelativeTime(transaction.date)}</span>
-                                                    <span className="mx-2">•</span>
-                                                    <span>{formatDate(transaction.date)}</span>
                                                 </div>
                                             </div>
 
@@ -151,6 +184,29 @@ const TransactionList = ({
                                                 </p>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex items-center space-x-2 ml-4">
+                                        <button
+                                            onClick={() => handleEditTransaction(transaction)}
+                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                            title="Edit transaction"
+                                        >
+                                            <Edit3 className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteTransaction(transaction)}
+                                            disabled={deletingId === transaction._id}
+                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            title="Delete transaction"
+                                        >
+                                            {deletingId === transaction._id ? (
+                                                <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                                            ) : (
+                                                <Trash2 className="h-4 w-4" />
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -195,6 +251,17 @@ const TransactionList = ({
                     </div>
                 )}
             </div>
+
+            {/* Edit Transaction Dialog */}
+            <AddTransactionDialog
+                open={showEditDialog}
+                onClose={() => {
+                    setShowEditDialog(false);
+                    setEditingTransaction(null);
+                }}
+                onSuccess={handleEditSuccess}
+                editTransaction={editingTransaction}
+            />
         </div>
     );
 };

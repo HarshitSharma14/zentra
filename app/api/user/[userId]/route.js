@@ -150,7 +150,19 @@ export async function GET(request, { params }) {
             success: true,
             user: user,
             categories: user.categories,
-            summaryData: result[0]
+            summaryData: result[0],
+            budgetData: {
+                monthlyBudget: user.monthlyBudget || {
+                    enabled: false,
+                    autoRenew: false,
+                    categories: {}
+                },
+                yearlyBudget: user.yearlyBudget || {
+                    enabled: false,
+                    autoRenew: false,
+                    categories: {}
+                }
+            }
         });
 
     } catch (error) {

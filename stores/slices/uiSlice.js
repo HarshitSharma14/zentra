@@ -20,6 +20,9 @@ export const createUiSlice = (set, get) => ({
         monthlyAnalysis: false,
         budgets: false,
         categories: false,
+        addingTransaction: false,
+        updatingTransaction: false,
+        deletingTransaction: false,
     },
 
     // UI Actions

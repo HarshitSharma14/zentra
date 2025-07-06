@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { Plus, TrendingUp, TrendingDown, History, Calendar, Eye } from 'lucide-react';
 import useFinanceStore from '@/stores/useFinanceStore';
-
+import { useRouter } from 'next/navigation';
 const SummaryCard = ({ onAddTransaction }) => {
     const [viewMode, setViewMode] = useState('monthly'); // 'monthly' or 'yearly'
-
+    const router = useRouter();
     const { summaryData } = useFinanceStore();
 
     const formatCurrency = (amount) => {
@@ -139,7 +139,7 @@ const SummaryCard = ({ onAddTransaction }) => {
 
                         {/* View History - Secondary Button */}
                         <button
-                            onClick={() => alert('Navigate to transaction history...')}
+                            onClick={() => router.push('/transactions')}
                             className="group w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-4 px-6 rounded-2xl transition-all duration-300 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                         >
                             <div className="flex items-center justify-center space-x-3">

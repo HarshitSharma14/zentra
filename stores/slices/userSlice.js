@@ -5,16 +5,47 @@ export const createUserSlice = (set, get) => ({
     // User state
     user: null,
     showOnboarding: false,
-    summaryData: {},
+    categories: ['Food & Dining',
+        'Transportation',
+        'Shopping',
+        'Bills & Utilities',
+        'Entertainment',
+        'Healthcare',
+        'Education',
+        'Travel',
+        'Other',
+        'Income',
+        'Freelance',
+        'Investment',
+        'Gift',
+        'Other Income'], // Add this field for storing user's custom categories
+    summaryData: {
+        totalBalance: 0,
+        monthlyIncome: 0,
+        monthlySpent: 0,
+        yearlyIncome: 0,
+        yearlySpent: 0
+    },
 
 
     // User actions
     setShowOnboarding: (show) => set({ showOnboarding: show }),
 
+    setCategories: async (category) => {
+        set({ categories: [...get().categories, category] })
+        try {
+            const response = await axios.post(`/api/user/${get().user}/category`, {
+                category
+            })
+        } catch (error) {
+            console.error('Error setting categories:', error);
+        }
+    },
+
     // Initialize user - minimal essential data only
     initializeUser: async () => {
         set((state) => ({
-            loading: { ...state.loading, user: true }
+            loading: { ...state.loading, user: true, transactions: true }
         }));
 
         const userId = localStorage.getItem('ZentraFinanceUserId');
@@ -24,11 +55,14 @@ export const createUserSlice = (set, get) => ({
                 // Fetch only essential user data + summary
                 const response = await axios.get(`/api/user/${userId}`);
 
+
                 if (response.data.success) {
+                    console.log(response.data)
                     set({
                         user: userId,
                         showOnboarding: false,
-                        summaryData: response.data.summaryData,
+                        categories: [...get().categories, ...response.data.categories],
+                        summaryData: { ...get().summaryData, ...response.data.summaryData },
                         loading: { ...get().loading, user: false }
                     });
 
@@ -37,7 +71,7 @@ export const createUserSlice = (set, get) => ({
                     localStorage.removeItem('ZentraFinanceUserId');
                     set({
                         showOnboarding: true,
-                        loading: { ...get().loading, user: false }
+                        loading: { ...get().loading, user: false, transactions: false }
                     });
                 }
             } catch (error) {
@@ -45,13 +79,13 @@ export const createUserSlice = (set, get) => ({
                 localStorage.removeItem('ZentraFinanceUserId');
                 set({
                     showOnboarding: true,
-                    loading: { ...get().loading, user: false }
+                    loading: { ...get().loading, user: false, transactions: false }
                 });
             }
         } else {
             set({
                 showOnboarding: true,
-                loading: { ...get().loading, user: false }
+                loading: { ...get().loading, user: false, transactions: false }
             });
         }
     },

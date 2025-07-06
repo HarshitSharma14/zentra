@@ -15,6 +15,7 @@ const HomePage = () => {
         showOnboarding,
         initializeUser,
         createUser,
+        setNavigationItems
     } = useFinanceStore();
 
     const [showAddTransaction, setShowAddTransaction] = useState(false);
@@ -22,6 +23,12 @@ const HomePage = () => {
     // Initialize user on page load
     useEffect(() => {
         initializeUser();
+        setNavigationItems([
+            { name: 'Dashboard', href: '/', active: true },
+            { name: 'Transactions', href: '/transactions', active: false },
+            { name: 'Analytics', href: '/analytics', active: false },
+            { name: 'Budgets', href: '/budgets', active: false },
+        ]);
     }, [initializeUser]);
 
     // Loading state - show until we have user data OR need to show onboarding
@@ -48,7 +55,6 @@ const HomePage = () => {
     if (showOnboarding) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-                <Header />
 
                 <div className="min-h-screen flex items-center justify-center p-6">
                     <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-10 max-w-lg w-full">
@@ -103,9 +109,8 @@ const HomePage = () => {
     // Main dashboard
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            <Header />
 
-            <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+            <div className="w-[90%] mx-auto px-6 lg:px-8 py-8">
 
                 {!showAddTransaction && (
                     <SummaryCard
@@ -115,17 +120,19 @@ const HomePage = () => {
 
                 {showAddTransaction && (
                     <AddTransactionDialog
+                        open={showAddTransaction}
                         onClose={() => setShowAddTransaction(false)}
                         onSuccess={() => {
                             setShowAddTransaction(false);
-                            alert('Transaction added! Redirecting to transaction history...');
+                            router.push('/transactions');
+                            // alert('Transaction added! Redirecting to transaction history...');
                         }}
                     />
                 )}
 
                 {/* Main Content Grid - Better spacing and height */}
-                <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 min-h-[600px]">
-                    <div className="xl:col-span-2">
+                <div className="flex w-[100%] flex-row gap-8 min-h-[600px]">
+                    <div className="flex w-[50%]">
                         <MonthlyAnalysis />
                     </div>
                     <div className="xl:col-span-3">

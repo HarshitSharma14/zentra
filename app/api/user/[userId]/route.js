@@ -149,6 +149,7 @@ export async function GET(request, { params }) {
         return NextResponse.json({
             success: true,
             user: user,
+            categories: user.categories,
             summaryData: result[0]
         });
 

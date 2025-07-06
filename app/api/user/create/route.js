@@ -15,7 +15,7 @@ export async function POST(request) {
         // Prepare complete user object upfront
         const newUser = {
             _id: new ObjectId(),
-            createdAt: new Date(),
+            categories: [],
             monthlyBudget: {
                 enabled: withMockData ? true : false,
                 autoRenew: withMockData ? true : false,

@@ -2,11 +2,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Moon, Sun, Bell, Settings, User, Search, Menu, X, ChevronDown } from 'lucide-react';
+import useFinanceStore from '@/stores/useFinanceStore';
 
 const Header = () => {
     const [darkMode, setDarkMode] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+    const { navigationItems, setNavigationItems } = useFinanceStore();
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
@@ -27,12 +29,6 @@ const Header = () => {
         }
     };
 
-    const navigationItems = [
-        { name: 'Dashboard', href: '/', active: true },
-        { name: 'Transactions', href: '/transactions', active: false },
-        { name: 'Analytics', href: '/analytics', active: false },
-        { name: 'Budgets', href: '/budgets', active: false },
-    ];
 
     return (
         <>

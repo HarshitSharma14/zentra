@@ -1,91 +1,58 @@
 // stores/slices/uiSlice.js
-
 export const createUiSlice = (set, get) => ({
-    // Loading states for each component
+    // UI State
+    showOnboarding: false,
+    sidebarOpen: false,
+    theme: 'light',
+    navigationItems: [
+        { name: 'Dashboard', href: '/', active: true },
+        { name: 'Transactions', href: '/transactions', active: false },
+        { name: 'Analytics', href: '/analytics', active: false },
+        { name: 'Budgets', href: '/budgets', active: false },
+    ],
+
+    setNavigationItems: (items) => set({ navigationItems: items }),
+
+    // Loading states
     loading: {
         user: false,
-        summary: false,
+        transactions: false,
         monthlyAnalysis: false,
-        currentBudget: false,
-        transactions: false
+        budgets: false,
+        categories: false,
     },
 
-    // Modal and dialog states
-    modals: {
-        addTransaction: false,
-        editTransaction: false,
-        budgetSettings: false,
-        userSettings: false
-    },
+    // UI Actions
+    setShowOnboarding: (show) => set({ showOnboarding: show }),
 
-    // Notification states
-    notifications: [],
+    setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-    // UI actions
-    setLoading: (type, value) => set((state) => ({
-        loading: { ...state.loading, [type]: value }
+    setTheme: (theme) => set({ theme }),
+
+    toggleTheme: () => set((state) => ({
+        theme: state.theme === 'light' ? 'dark' : 'light'
     })),
 
-    setModal: (modalName, isOpen, data = null) => set((state) => ({
-        modals: {
-            ...state.modals,
-            [modalName]: isOpen
-        },
-        modalData: isOpen ? data : null
+    // Loading state helpers
+    setLoading: (key, value) => set((state) => ({
+        loading: {
+            ...state.loading,
+            [key]: value
+        }
+    })),
+
+    setMultipleLoading: (loadingStates) => set((state) => ({
+        loading: {
+            ...state.loading,
+            ...loadingStates
+        }
     })),
 
     // Reset all loading states
-    resetLoading: () => set({
-        loading: {
-            user: false,
-            summary: false,
-            monthlyAnalysis: false,
-            currentBudget: false,
-            transactions: false
-        }
-    }),
-
-    // Add notification
-    addNotification: (notification) => {
-        const id = Date.now().toString();
-        const newNotification = {
-            id,
-            timestamp: new Date(),
-            ...notification
-        };
-
-        set((state) => ({
-            notifications: [newNotification, ...state.notifications]
-        }));
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            get().removeNotification(id);
-        }, 5000);
-
-        return id;
-    },
-
-    // Remove notification
-    removeNotification: (id) => set((state) => ({
-        notifications: state.notifications.filter(n => n.id !== id)
-    })),
-
-    // Success notification helper
-    showSuccess: (message, title = 'Success') => {
-        return get().addNotification({
-            type: 'success',
-            title,
-            message
-        });
-    },
-
-    // Error notification helper
-    showError: (message, title = 'Error') => {
-        return get().addNotification({
-            type: 'error',
-            title,
-            message
-        });
-    }
+    resetLoading: () => set((state) => ({
+        loading: Object.keys(state.loading).reduce((acc, key) => {
+            acc[key] = false;
+            return acc;
+        }, {})
+    }))
 });

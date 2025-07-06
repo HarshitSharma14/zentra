@@ -24,7 +24,7 @@ const CurrentBudget = () => {
     // If no user, show placeholder
     if (!user) {
         return (
-            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-6 lg:p-8 shadow-2xl">
+            <div className="bg-card/95 backdrop-blur-xl rounded-3xl border border-border/50 p-6 lg:p-8 shadow-card">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
@@ -46,7 +46,7 @@ const CurrentBudget = () => {
                     </p>
                     <button
                         onClick={() => alert('Navigate to budget setup...')}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-button hover:shadow-button-hover font-medium"
                     >
                         Set Up Budget
                     </button>
@@ -131,7 +131,7 @@ const CurrentBudget = () => {
     return (
         <div
             onClick={handleClick}
-            className="bg-white/70 w-full dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-6 lg:p-8 cursor-pointer hover:shadow-xl transition-all group shadow-2xl"
+            className="bg-card/95 w-full backdrop-blur-xl rounded-3xl border border-border/50 p-6 lg:p-8 cursor-pointer shadow-card hover:shadow-card-hover hover:scale-[1.01] hover:border-primary/20 transition-all group flex flex-col min-h-0"
         >
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
@@ -150,7 +150,7 @@ const CurrentBudget = () => {
                     {/* Detailed Budget Button */}
                     <button
                         onClick={() => router.push('/budget')}
-                        className="group flex w-[100%] items-center justify-center space-x-2 px-4 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mx-auto"
+                        className="group flex w-[100%] items-center justify-center space-x-2 px-4 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-300 transform hover:scale-105 shadow-button hover:shadow-button-hover mx-auto"
                     >
                         <BarChart3 className="h-4 w-4" />
                         <span className="text-sm font-semibold">Detailed Budget</span>
@@ -161,15 +161,15 @@ const CurrentBudget = () => {
 
             {/* Budget View Toggle */}
             <div className="mb-6">
-                <div className="flex items-center mx-auto bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
+                <div className="flex items-center mx-auto bg-muted rounded-xl p-1 shadow-card">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsYearlyView(false);
                         }}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${!isYearlyView
-                            ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                            ? 'bg-card text-primary shadow-button'
+                            : 'text-muted-foreground hover:text-primary'
                             }`}
                     >
                         <Calendar className="h-4 w-4" />
@@ -181,8 +181,8 @@ const CurrentBudget = () => {
                             setIsYearlyView(true);
                         }}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${isYearlyView
-                            ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                            ? 'bg-card text-primary shadow-button'
+                            : 'text-muted-foreground hover:text-primary'
                             }`}
                     >
                         <TrendingUp className="h-4 w-4" />
@@ -204,7 +204,7 @@ const CurrentBudget = () => {
                             e.stopPropagation();
                             alert('Navigate to budget setup...');
                         }}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-button hover:shadow-button-hover font-medium"
                     >
                         Set Up {isYearlyView ? 'Yearly' : 'Monthly'} Budget
                     </button>
@@ -213,7 +213,7 @@ const CurrentBudget = () => {
                 <>
                     {/* Budget Overview */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50">
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50 shadow-card hover:shadow-card-hover hover:scale-[1.02] transition-all duration-300">
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-green-100 dark:bg-green-800 rounded-xl flex items-center justify-center">
                                     <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -232,7 +232,7 @@ const CurrentBudget = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-2xl p-6 border border-blue-200/50 dark:border-blue-700/50">
+                        <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-2xl p-6 border border-blue-200/50 dark:border-blue-700/50 shadow-card hover:shadow-card-hover hover:scale-[1.02] transition-all duration-300">
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800 rounded-xl flex items-center justify-center">
                                     <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -263,7 +263,7 @@ const CurrentBudget = () => {
                             const isOverBudget = percentage > 100;
 
                             return (
-                                <div key={index} className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                <div key={index} className="bg-secondary/50 rounded-xl p-4 hover:bg-secondary/70 transition-all duration-300 shadow-card hover:shadow-card-hover hover:scale-[1.01]">
                                     <div className="flex justify-between items-center mb-3">
                                         <span className="font-medium text-gray-900 dark:text-white">
                                             {item.category}
@@ -331,8 +331,8 @@ const CurrentBudget = () => {
                 </>
             )}
 
-            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+            <div onClick={() => router.push("/budget")} className="mt-auto pt-4 border-t border-border/50 flex justify-center">
+                <p className="text-center text-sm text-muted-foreground">
                     Click to view detailed budget breakdown
                 </p>
             </div>

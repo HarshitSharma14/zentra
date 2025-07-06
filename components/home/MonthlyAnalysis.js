@@ -80,7 +80,7 @@ const MonthlyAnalysis = () => {
 
   if (loading.monthlyAnalysis) {
     return (
-      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-8 h-full flex w-full items-center justify-center transition-colors duration-300">
+      <div className="bg-card/95 backdrop-blur-xl rounded-3xl border border-border/50 p-8 h-full flex w-full items-center justify-center transition-colors duration-300 shadow-card">
         <div className="text-center">
           <Loader className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400 mx-auto mb-4 transition-colors duration-300" />
           <p className="text-gray-500 dark:text-gray-400 transition-colors duration-300">Loading monthly analysis...</p>
@@ -90,22 +90,22 @@ const MonthlyAnalysis = () => {
   }
 
   return (
-    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-4 md:p-6 lg:p-8 h-full w-full flex flex-col">
+    <div className="bg-card/95 backdrop-blur-xl rounded-3xl border border-border/50 p-4 md:p-6 lg:p-8 h-full w-full flex flex-col shadow-card hover:shadow-card-hover hover:scale-[1.01] hover:border-primary/20 transition-all duration-300">
       {/* Header with Month Navigation */}
       <div className="flex items-center justify-between mb-4 md:mb-6 lg:mb-8">
         <button
           onClick={goToPreviousMonth}
-          className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary hover:bg-secondary/80 shadow-button hover:shadow-button-hover hover:scale-105 transition-all duration-200"
           title="Previous Month"
         >
-          <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <ChevronLeft className="h-5 w-5 text-secondary-foreground" />
         </button>
 
         <div className="text-center">
-          <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+          <h3 className="text-xl md:text-2xl font-bold text-foreground">
             Monthly Analysis
           </h3>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm md:text-base text-muted-foreground mt-1">
             {formatSelectedMonth()}
           </p>
         </div>
@@ -113,15 +113,15 @@ const MonthlyAnalysis = () => {
         <button
           onClick={goToNextMonth}
           disabled={!canGoNext()}
-          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${canGoNext()
-            ? 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600'
-            : 'bg-gray-50 dark:bg-gray-800 cursor-not-allowed'
+          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 ${canGoNext()
+            ? 'bg-secondary hover:bg-secondary/80 shadow-button hover:shadow-button-hover hover:scale-105'
+            : 'bg-muted cursor-not-allowed opacity-50'
             }`}
           title="Next Month"
         >
           <ChevronRight className={`h-5 w-5 ${canGoNext()
-            ? 'text-gray-600 dark:text-gray-400'
-            : 'text-gray-400 dark:text-gray-600'
+            ? 'text-secondary-foreground'
+            : 'text-muted-foreground'
             }`} />
         </button>
       </div>
@@ -129,10 +129,10 @@ const MonthlyAnalysis = () => {
       {/* Charts container: always stacked vertically */}
       <div className="flex flex-col gap-4 md:gap-6 flex-1 min-h-0">
         {/* Pie Chart - Category Breakdown */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-2xl p-3 md:p-4 lg:p-6 flex-1 min-h-0">
+        <div className="bg-secondary/30 rounded-2xl p-3 md:p-4 lg:p-6 flex-1 min-h-0 shadow-card hover:shadow-card-hover hover:scale-[1.01] transition-all duration-300 border border-border/30">
           <div className="flex items-center space-x-3 mb-3 md:mb-4">
-            <PieIcon className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
-            <h4 className="text-sm md:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">
+            <PieIcon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            <h4 className="text-sm md:text-base lg:text-lg font-semibold text-foreground">
               Expenses by Category
             </h4>
           </div>
@@ -167,10 +167,10 @@ const MonthlyAnalysis = () => {
         </div>
 
         {/* Bar Chart - Daily Spending */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-2xl p-3 md:p-4 lg:p-6 flex-1 min-h-0">
+        <div className="bg-secondary/30 rounded-2xl p-3 md:p-4 lg:p-6 flex-1 min-h-0 shadow-card hover:shadow-card-hover hover:scale-[1.01] transition-all duration-300 border border-border/30">
           <div className="flex items-center space-x-3 mb-3 md:mb-4">
-            <BarChart3 className="h-5 w-5 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
-            <h4 className="text-sm md:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">
+            <BarChart3 className="h-5 w-5 md:h-6 md:w-6 text-chart-1" />
+            <h4 className="text-sm md:text-base lg:text-lg font-semibold text-foreground">
               Daily Spending - {formatSelectedMonth()}
             </h4>
           </div>

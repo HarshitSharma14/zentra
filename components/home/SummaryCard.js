@@ -31,7 +31,7 @@ const SummaryCard = ({ onAddTransaction }) => {
 
     return (
         <div className="mb-8">
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 p-8 lg:p-10 shadow-2xl">
+            <div className="bg-card/95 backdrop-blur-xl rounded-3xl border border-border/50 p-8 lg:p-10 shadow-card transition-all duration-300 hover:shadow-card-hover hover:scale-[1.01] hover:border-primary/20">
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-center">
 
                     {/* Total Balance - Hero Section */}
@@ -54,12 +54,12 @@ const SummaryCard = ({ onAddTransaction }) => {
                     <div className="xl:col-span-5">
                         {/* Period Toggle */}
                         <div className="flex items-center justify-center mb-6">
-                            <div className="bg-gray-100 dark:bg-gray-700 rounded-2xl p-1.5 flex shadow-inner">
+                            <div className="bg-muted rounded-2xl p-1.5 flex shadow-card">
                                 <button
                                     onClick={() => setViewMode('monthly')}
                                     className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 ${viewMode === 'monthly'
-                                        ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-lg transform scale-105'
-                                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                                        ? 'bg-card text-primary shadow-button transform scale-105'
+                                        : 'text-muted-foreground hover:text-primary'
                                         }`}
                                 >
                                     <Calendar className="h-4 w-4" />
@@ -68,8 +68,8 @@ const SummaryCard = ({ onAddTransaction }) => {
                                 <button
                                     onClick={() => setViewMode('yearly')}
                                     className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center space-x-2 ${viewMode === 'yearly'
-                                        ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-lg transform scale-105'
-                                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                                        ? 'bg-card text-primary shadow-button transform scale-105'
+                                        : 'text-muted-foreground hover:text-primary'
                                         }`}
                                 >
                                     <Calendar className="h-4 w-4" />
@@ -81,7 +81,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                         {/* Income & Expense Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Income Card */}
-                            <div className="group relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/20 dark:via-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50 hover:shadow-lg transition-all duration-300">
+                            <div className="group relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/20 dark:via-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-green-200/50 dark:border-green-700/50 shadow-card hover:shadow-card-hover hover:scale-[1.02] transition-all duration-300">
                                 <div className="relative z-10">
                                     <div className="flex items-center space-x-3 mb-4">
                                         <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -102,7 +102,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                             </div>
 
                             {/* Expenses Card */}
-                            <div className="group relative overflow-hidden bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 dark:from-red-900/20 dark:via-rose-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-red-200/50 dark:border-red-700/50 hover:shadow-lg transition-all duration-300">
+                            <div className="group relative overflow-hidden bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 dark:from-red-900/20 dark:via-rose-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-red-200/50 dark:border-red-700/50 shadow-card hover:shadow-card-hover hover:scale-[1.02] transition-all duration-300">
                                 <div className="relative z-10">
                                     <div className="flex items-center space-x-3 mb-4">
                                         <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -128,7 +128,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                         {/* Add Transaction - Primary Button */}
                         <button
                             onClick={onAddTransaction}
-                            className="group relative w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-800 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden"
+                            className="group relative w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-4 px-6 rounded-2xl transition-all duration-300 shadow-button hover:shadow-button-hover transform hover:scale-105 overflow-hidden"
                         >
                             <div className="relative z-10 flex items-center justify-center space-x-3">
                                 <Plus className="h-5 w-5" />
@@ -140,7 +140,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                         {/* View History - Secondary Button */}
                         <button
                             onClick={() => router.push('/transactions')}
-                            className="group w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-4 px-6 rounded-2xl transition-all duration-300 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+                            className="group w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold py-4 px-6 rounded-2xl transition-all duration-300 border border-border hover:border-primary/30 shadow-button hover:shadow-button-hover hover:scale-[1.02]"
                         >
                             <div className="flex items-center justify-center space-x-3">
                                 <Eye className="h-5 w-5" />

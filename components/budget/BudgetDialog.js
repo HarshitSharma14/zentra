@@ -37,28 +37,37 @@ import {
 import { styled } from '@mui/system';
 import useFinanceStore from '@/stores/useFinanceStore';
 
-// Styled components
+// Styled components with enhanced design
 const StyledDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialog-paper': {
         borderRadius: 24,
         padding: 0,
-        maxWidth: 700,
+        maxWidth: 750,
         width: '100%',
         margin: 16,
-        background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        overflow: 'visible'
+        background: 'linear-gradient(145deg, oklch(1 0 0) 0%, oklch(0.99 0.002 106.423) 100%)',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        overflow: 'visible',
+        border: '1px solid oklch(0.9 0.02 248.089)',
+        [theme.breakpoints.down('sm')]: {
+            margin: 8,
+            borderRadius: 20
+        }
     }
 }));
 
 const CategoryCard = styled(Paper)(({ theme }) => ({
-    padding: 16,
-    borderRadius: 12,
-    border: '1px solid #e5e7eb',
-    background: '#f9fafb',
-    transition: 'all 0.2s ease',
+    padding: '24px',
+    borderRadius: 16,
+    border: '1px solid oklch(0.9 0.02 248.089)',
+    background: 'oklch(1 0 0)',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
     '&:hover': {
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        transform: 'translateY(-2px)',
+        background: 'oklch(0.99 0.002 106.423)',
+        borderColor: 'oklch(0.567 0.191 255.391)'
     }
 }));
 
@@ -222,14 +231,15 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                 <Box>
                     {/* Header */}
                     <DialogTitle sx={{
-                        p: 3,
-                        pb: 2,
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
+                        p: 4,
+                        pb: 3,
+                        background: 'linear-gradient(135deg, oklch(0.567 0.191 255.391) 0%, oklch(0.5 0.18 280) 100%)',
+                        color: 'oklch(0.99 0.002 106.423)',
                         position: 'relative',
                         overflow: 'hidden',
                         borderTopLeftRadius: 24,
-                        borderTopRightRadius: 24
+                        borderTopRightRadius: 24,
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}>
                         <Box sx={{ position: 'relative', zIndex: 1 }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -293,20 +303,32 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                 value={budgetForm.totalBudget}
                                 onChange={handleTotalBudgetChange}
                                 InputProps={{
-                                    startAdornment: <CurrencyRupee style={{ marginRight: 8, color: '#6b7280' }} />,
+                                    startAdornment: <CurrencyRupee style={{ marginRight: 8, color: 'oklch(0.576 0.068 252.453)' }} />,
                                 }}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: 3,
                                         fontSize: 16,
+                                        padding: '6px 12px',
+                                        background: 'oklch(1 0 0)',
+                                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                        transition: 'all 0.2s ease',
                                         '& fieldset': {
-                                            borderWidth: 2,
+                                            borderWidth: 1.5,
+                                            borderColor: 'oklch(0.9 0.02 248.089)',
                                         },
-                                        '&:hover fieldset': {
-                                            borderColor: '#667eea',
+                                        '&:hover': {
+                                            boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+                                            '& fieldset': {
+                                                borderColor: 'oklch(0.567 0.191 255.391)',
+                                            }
                                         },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: '#667eea',
+                                        '&.Mui-focused': {
+                                            boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+                                            '& fieldset': {
+                                                borderColor: 'oklch(0.567 0.191 255.391)',
+                                                borderWidth: 2,
+                                            }
                                         }
                                     }
                                 }}
@@ -340,33 +362,33 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                 <Typography variant="h6" gutterBottom fontWeight="bold" color="text.primary">
                                     Budget Summary
                                 </Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={4}>
-                                        <Box textAlign="center" p={2} bgcolor="blue.50" borderRadius={2}>
-                                            <Typography variant="body2" color="blue.700" fontWeight="medium">
+                                <Grid container spacing={2} justifyContent="space-around">
+                                    <Grid item width="30%" xs={4}>
+                                        <Box textAlign="center" p={3} bgcolor="oklch(0.96 0.04 220)" borderRadius={3} sx={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', border: '1px solid oklch(0.9 0.08 220)' }}>
+                                            <Typography variant="body2" sx={{ color: 'oklch(0.4 0.15 220)' }} fontWeight="medium">
                                                 Total Budget
                                             </Typography>
-                                            <Typography variant="h6" color="blue.800" fontWeight="bold">
+                                            <Typography variant="h6" sx={{ color: 'oklch(0.3 0.18 220)' }} fontWeight="bold">
                                                 ${totalBudget.toFixed(2)}
                                             </Typography>
                                         </Box>
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        <Box textAlign="center" p={2} bgcolor="green.50" borderRadius={2}>
-                                            <Typography variant="body2" color="green.700" fontWeight="medium">
+                                    <Grid item width="30%" xs={4}>
+                                        <Box textAlign="center" p={3} bgcolor="oklch(0.96 0.04 142)" borderRadius={3} sx={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', border: '1px solid oklch(0.9 0.08 142)' }}>
+                                            <Typography variant="body2" sx={{ color: 'oklch(0.4 0.15 142)' }} fontWeight="medium">
                                                 Allocated
                                             </Typography>
-                                            <Typography variant="h6" color="green.800" fontWeight="bold">
+                                            <Typography variant="h6" sx={{ color: 'oklch(0.3 0.18 142)' }} fontWeight="bold">
                                                 ${categoryTotal.toFixed(2)}
                                             </Typography>
                                         </Box>
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        <Box textAlign="center" p={2} bgcolor={remainingBudget >= 0 ? "gray.50" : "red.50"} borderRadius={2}>
-                                            <Typography variant="body2" color={remainingBudget >= 0 ? "gray.700" : "red.700"} fontWeight="medium">
+                                    <Grid item width="30%" xs={4}>
+                                        <Box textAlign="center" p={3} bgcolor={remainingBudget >= 0 ? "oklch(0.961 0.013 248.089)" : "oklch(0.96 0.04 29)"} borderRadius={3} sx={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', border: remainingBudget >= 0 ? '1px solid oklch(0.9 0.02 248.089)' : '1px solid oklch(0.9 0.08 29)' }}>
+                                            <Typography variant="body2" sx={{ color: remainingBudget >= 0 ? 'oklch(0.576 0.068 252.453)' : 'oklch(0.4 0.15 29)' }} fontWeight="medium">
                                                 Remaining
                                             </Typography>
-                                            <Typography variant="h6" color={remainingBudget >= 0 ? "gray.800" : "red.800"} fontWeight="bold">
+                                            <Typography variant="h6" sx={{ color: remainingBudget >= 0 ? 'oklch(0.353 0.068 252.453)' : 'oklch(0.3 0.18 29)' }} fontWeight="bold">
                                                 ${remainingBudget.toFixed(2)}
                                             </Typography>
                                         </Box>
@@ -382,12 +404,15 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                             </Typography>
 
                             {/* Add New Category */}
-                            <Box mb={3} p={3} bgcolor="gray.50" borderRadius={3}>
-                                <Typography variant="subtitle2" gutterBottom fontWeight="medium" color="text.secondary">
-                                    Add Category Budget
+                            <Box mb={4} p={4} bgcolor="oklch(0.96 0.015 248.089)" borderRadius={4} border="2px dashed oklch(0.567 0.191 255.391)" sx={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)' }}>
+                                <Typography variant="h6" gutterBottom fontWeight="600" sx={{ color: 'oklch(0.567 0.191 255.391)', mb: 3 }}>
+                                    Add New Category
                                 </Typography>
-                                <Grid container spacing={2} alignItems="center">
+                                <Grid container spacing={3} justifyContent="space-between" alignItems="end">
                                     <Grid item xs={12} sm={5}>
+                                        <Typography variant="body2" fontWeight="medium" sx={{ mb: 1, color: 'oklch(0.234 0.048 252.366)' }}>
+                                            Category Name
+                                        </Typography>
                                         <Autocomplete
                                             freeSolo
                                             options={categories}
@@ -402,20 +427,41 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 <TextField
                                                     {...params}
                                                     placeholder="Select or create category"
-                                                    size="small"
                                                     InputProps={{
                                                         ...params.InputProps,
-                                                        startAdornment: <Category style={{ marginRight: 8, color: '#6b7280', fontSize: 20 }} />,
+                                                        startAdornment: <Category style={{ marginRight: 8, color: 'oklch(0.576 0.068 252.453)', fontSize: 18 }} />,
+                                                    }}
+                                                    sx={{
+                                                        '& .MuiOutlinedInput-root': {
+                                                            borderRadius: 3,
+                                                            background: 'oklch(1 0 0)',
+                                                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                                            transition: 'all 0.2s ease',
+                                                            height: '48px',
+                                                            '& fieldset': {
+                                                                borderColor: 'oklch(0.9 0.02 248.089)',
+                                                                borderWidth: '1.5px'
+                                                            },
+                                                            '&:hover fieldset': {
+                                                                borderColor: 'oklch(0.567 0.191 255.391)',
+                                                            },
+                                                            '&.Mui-focused fieldset': {
+                                                                borderColor: 'oklch(0.567 0.191 255.391)',
+                                                                borderWidth: '2px'
+                                                            }
+                                                        }
                                                     }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
+                                        <Typography variant="body2" fontWeight="medium" sx={{ mb: 1, color: 'oklch(0.234 0.048 252.366)' }}>
+                                            Budget Amount
+                                        </Typography>
                                         <TextField
                                             fullWidth
-                                            size="small"
-                                            placeholder="Amount"
+                                            placeholder="Enter amount"
                                             value={newCategory.amount}
                                             onChange={(e) => {
                                                 const value = e.target.value;
@@ -424,7 +470,27 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 }
                                             }}
                                             InputProps={{
-                                                startAdornment: <CurrencyRupee style={{ marginRight: 4, color: '#6b7280', fontSize: 20 }} />,
+                                                startAdornment: <CurrencyRupee style={{ marginRight: 8, color: 'oklch(0.576 0.068 252.453)', fontSize: 18 }} />,
+                                            }}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    borderRadius: 3,
+                                                    background: 'oklch(1 0 0)',
+                                                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                                    transition: 'all 0.2s ease',
+                                                    height: '48px',
+                                                    '& fieldset': {
+                                                        borderColor: 'oklch(0.9 0.02 248.089)',
+                                                        borderWidth: '1.5px'
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'oklch(0.567 0.191 255.391)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'oklch(0.567 0.191 255.391)',
+                                                        borderWidth: '2px'
+                                                    }
+                                                }
                                             }}
                                         />
                                     </Grid>
@@ -436,12 +502,27 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                             disabled={!newCategory.name || !newCategory.amount}
                                             startIcon={<Add />}
                                             sx={{
-                                                borderRadius: 2,
+                                                borderRadius: 3,
                                                 textTransform: 'none',
-                                                fontWeight: 600
+                                                fontWeight: 600,
+                                                height: '48px',
+                                                background: 'oklch(0.567 0.191 255.391)',
+                                                color: 'oklch(0.99 0.002 106.423)',
+                                                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                                transition: 'all 0.2s ease',
+                                                '&:hover': {
+                                                    background: 'oklch(0.5 0.18 255.391)',
+                                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                                    transform: 'translateY(-1px)'
+                                                },
+                                                '&:disabled': {
+                                                    background: 'oklch(0.576 0.068 252.453)',
+                                                    color: 'oklch(0.8 0.02 252.453)',
+                                                    transform: 'none'
+                                                }
                                             }}
                                         >
-                                            Add
+                                            Add Category
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -450,41 +531,78 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                             {/* Category List */}
                             <Box>
                                 {budgetForm.categories.length > 0 ? (
-                                    <Box display="flex" flexDirection="column" gap={2}>
+                                    <Box display="flex" flexDirection="column" gap={3}>
                                         {budgetForm.categories.map((category, index) => (
                                             <CategoryCard key={index}>
-                                                <Grid container spacing={2} alignItems="center">
-                                                    <Grid item xs={12} sm={5}>
-                                                        <Box display="flex" alignItems="center" gap={1}>
-                                                            <Category sx={{ color: '#6b7280', fontSize: 20 }} />
-                                                            <Typography variant="body1" fontWeight="medium">
+                                                <Grid container spacing={3} justifyContent="space-between" alignItems="center">
+                                                    <Grid width="50%" item xs={12} sm={6}>
+                                                        <Box display="flex" alignItems="center" gap={2}>
+                                                            <Box sx={{
+                                                                p: 1,
+                                                                borderRadius: 2,
+                                                                background: 'oklch(0.961 0.013 248.089)',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center'
+                                                            }}>
+                                                                <Category sx={{ color: 'oklch(0.567 0.191 255.391)', fontSize: 18 }} />
+                                                            </Box>
+                                                            <Typography variant="body1" fontWeight="600" sx={{ color: 'oklch(0.234 0.048 252.366)' }}>
                                                                 {category.name}
                                                             </Typography>
                                                         </Box>
                                                     </Grid>
-                                                    <Grid item xs={12} sm={4}>
+                                                    <Grid item width="30%" xs={8} sm={4}>
                                                         <TextField
                                                             fullWidth
-                                                            size="small"
+                                                            placeholder="Enter amount"
                                                             value={category.amount}
                                                             onChange={(e) => handleCategoryAmountChange(index, e.target.value)}
                                                             InputProps={{
-                                                                startAdornment: <CurrencyRupee style={{ marginRight: 4, color: '#6b7280', fontSize: 20 }} />,
+                                                                startAdornment: <CurrencyRupee style={{ marginRight: 8, color: 'oklch(0.576 0.068 252.453)', fontSize: 18 }} />,
+                                                            }}
+                                                            sx={{
+                                                                '& .MuiOutlinedInput-root': {
+                                                                    borderRadius: 3,
+                                                                    background: 'oklch(0.99 0.002 106.423)',
+                                                                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                                                    transition: 'all 0.2s ease',
+                                                                    fontSize: '16px',
+                                                                    height: '48px',
+                                                                    '& fieldset': {
+                                                                        borderColor: 'oklch(0.9 0.02 248.089)',
+                                                                        borderWidth: '1.5px'
+                                                                    },
+                                                                    '&:hover fieldset': {
+                                                                        borderColor: 'oklch(0.567 0.191 255.391)',
+                                                                    },
+                                                                    '&.Mui-focused fieldset': {
+                                                                        borderColor: 'oklch(0.567 0.191 255.391)',
+                                                                        borderWidth: '2px'
+                                                                    }
+                                                                }
                                                             }}
                                                         />
                                                     </Grid>
-                                                    <Grid item xs={12} sm={3}>
+                                                    <Grid item width="10%" xs={4} sm={2}>
                                                         <Box display="flex" justifyContent="flex-end">
                                                             <IconButton
                                                                 onClick={() => handleRemoveCategory(index)}
                                                                 sx={{
-                                                                    color: '#ef4444',
+                                                                    color: 'oklch(0.628 0.258 29.234)',
+                                                                    background: 'oklch(0.95 0.04 29.234)',
+                                                                    borderRadius: 2.5,
+                                                                    width: 44,
+                                                                    height: 44,
+                                                                    transition: 'all 0.2s ease',
                                                                     '&:hover': {
-                                                                        backgroundColor: '#fee2e2'
+                                                                        backgroundColor: 'oklch(0.93 0.06 29.234)',
+                                                                        transform: 'scale(1.05)',
+                                                                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                                                                     }
                                                                 }}
                                                             >
-                                                                <Delete />
+                                                                <Delete sx={{ fontSize: 20 }} />
                                                             </IconButton>
                                                         </Box>
                                                     </Grid>
@@ -493,9 +611,13 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                         ))}
                                     </Box>
                                 ) : (
-                                    <Box textAlign="center" py={4}>
-                                        <Typography variant="body2" color="text.secondary">
-                                            No category budgets added yet. Add categories to track spending by type.
+                                    <Box textAlign="center" py={6} px={4} bgcolor="oklch(0.961 0.013 248.089)" borderRadius={3} border="1px dashed oklch(0.9 0.02 248.089)">
+                                        <Category sx={{ fontSize: 48, color: 'oklch(0.576 0.068 252.453)', mb: 2 }} />
+                                        <Typography variant="h6" fontWeight="medium" sx={{ color: 'oklch(0.234 0.048 252.366)', mb: 1 }}>
+                                            No categories added yet
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'oklch(0.576 0.068 252.453)' }}>
+                                            Add categories above to track spending by type and set budget limits.
                                         </Typography>
                                     </Box>
                                 )}
@@ -511,14 +633,23 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                     variant="outlined"
                                     onClick={onClose}
                                     sx={{
-                                        py: 2,
+                                        py: 2.5,
                                         borderRadius: 3,
                                         fontWeight: 600,
                                         fontSize: 16,
                                         textTransform: 'none',
-                                        borderWidth: 2,
+                                        borderWidth: 1.5,
+                                        borderColor: 'oklch(0.9 0.02 248.089)',
+                                        color: 'oklch(0.576 0.068 252.453)',
+                                        background: 'oklch(1 0 0)',
+                                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                        transition: 'all 0.2s ease',
                                         '&:hover': {
-                                            borderWidth: 2,
+                                            borderWidth: 1.5,
+                                            borderColor: 'oklch(0.567 0.191 255.391)',
+                                            background: 'oklch(0.961 0.013 248.089)',
+                                            boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+                                            transform: 'translateY(-1px)'
                                         }
                                     }}
                                 >
@@ -532,19 +663,25 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                     onClick={handleSubmit}
                                     disabled={!isFormValid || loading.updatingBudget}
                                     sx={{
-                                        py: 2,
+                                        py: 2.5,
                                         borderRadius: 3,
                                         fontWeight: 600,
                                         fontSize: 16,
                                         textTransform: 'none',
-                                        background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                                        boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.3)',
+                                        background: 'oklch(0.567 0.191 255.391)',
+                                        color: 'oklch(0.99 0.002 106.423)',
+                                        boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+                                        transition: 'all 0.2s ease',
                                         '&:hover': {
-                                            background: 'linear-gradient(135deg, #5a67d8, #6b46c1)',
+                                            background: 'oklch(0.5 0.18 255.391)',
+                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                            transform: 'translateY(-1px)'
                                         },
                                         '&:disabled': {
-                                            background: '#9ca3af',
-                                            boxShadow: 'none'
+                                            background: 'oklch(0.576 0.068 252.453)',
+                                            color: 'oklch(0.8 0.02 252.453)',
+                                            boxShadow: 'none',
+                                            transform: 'none'
                                         }
                                     }}
                                 >

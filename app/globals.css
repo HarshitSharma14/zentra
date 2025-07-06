@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body {
+  zoom: 0.85
+    /* 90% of normal size */
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -118,67 +123,69 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
 @layer utilities {
+
   /* Enhanced shadow utilities */
   .shadow-card {
-    box-shadow: 
+    box-shadow:
       0 1px 3px 0 rgba(0, 0, 0, 0.1),
       0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
-  
+
   .shadow-card-hover {
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   .shadow-dialog {
-    box-shadow: 
+    box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
-  
+
   .shadow-button {
-    box-shadow: 
+    box-shadow:
       0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
-  
+
   .shadow-button-hover {
-    box-shadow: 
+    box-shadow:
       0 2px 4px 0 rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Dark mode shadows */
   .dark .shadow-card {
-    box-shadow: 
+    box-shadow:
       0 1px 3px 0 rgba(0, 0, 0, 0.3),
       0 1px 2px 0 rgba(0, 0, 0, 0.2);
   }
-  
+
   .dark .shadow-card-hover {
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.4),
       0 2px 4px -1px rgba(0, 0, 0, 0.3);
   }
-  
+
   .dark .shadow-dialog {
-    box-shadow: 
+    box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.5),
       0 10px 10px -5px rgba(0, 0, 0, 0.3);
   }
-  
+
   /* Glass morphism effect */
   .glass-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   .dark .glass-card {
     background: rgba(22, 27, 34, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.1);

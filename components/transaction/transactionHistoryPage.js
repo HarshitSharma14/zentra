@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import {
     Plus,
-    DollarSign,
+    IndianRupee,
     ArrowUp,
     ArrowDown,
     Search,
@@ -42,9 +42,9 @@ const TransactionHistoryPage = () => {
 
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'INR'
         }).format(amount);
     };
 
@@ -83,7 +83,7 @@ const TransactionHistoryPage = () => {
                         {/* Total Balance Display */}
                         <div className="text-center mb-8">
                             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
-                                <DollarSign className="h-8 w-8 text-white" />
+                                <IndianRupee className="h-8 w-8 text-white" />
                             </div>
 
                             <h1 className="text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2">

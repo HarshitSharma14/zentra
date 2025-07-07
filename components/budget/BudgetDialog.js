@@ -23,7 +23,6 @@ import {
 import {
     Close as CloseIcon,
     TargetIcon,
-    DollarSign,
     Plus,
     Delete,
     Category,
@@ -369,7 +368,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 Total Budget
                                             </Typography>
                                             <Typography variant="h6" sx={{ color: 'oklch(0.3 0.18 220)' }} fontWeight="bold">
-                                                ${totalBudget.toFixed(2)}
+                                                ₹{totalBudget.toFixed(2)}
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -379,7 +378,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 Allocated
                                             </Typography>
                                             <Typography variant="h6" sx={{ color: 'oklch(0.3 0.18 142)' }} fontWeight="bold">
-                                                ${categoryTotal.toFixed(2)}
+                                                ₹{categoryTotal.toFixed(2)}
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -389,7 +388,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 Remaining
                                             </Typography>
                                             <Typography variant="h6" sx={{ color: remainingBudget >= 0 ? 'oklch(0.353 0.068 252.453)' : 'oklch(0.3 0.18 29)' }} fontWeight="bold">
-                                                ${remainingBudget.toFixed(2)}
+                                                ₹{remainingBudget.toFixed(2)}
                                             </Typography>
                                         </Box>
                                     </Grid>
@@ -409,7 +408,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                     Add New Category
                                 </Typography>
                                 <Grid container spacing={3} justifyContent="space-between" alignItems="end">
-                                    <Grid item xs={12} sm={5}>
+                                    <Grid item xs={12} sm={5} width="45%">
                                         <Typography variant="body2" fontWeight="medium" sx={{ mb: 1, color: 'oklch(0.234 0.048 252.366)' }}>
                                             Category Name
                                         </Typography>
@@ -455,7 +454,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                             )}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={4}>
+                                    <Grid item xs={12} sm={4} width="30%">
                                         <Typography variant="body2" fontWeight="medium" sx={{ mb: 1, color: 'oklch(0.234 0.048 252.366)' }}>
                                             Budget Amount
                                         </Typography>
@@ -494,7 +493,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={3}>
+                                    <Grid item xs={12} sm={3} width="15%">
                                         <Button
                                             fullWidth
                                             variant="contained"
@@ -522,7 +521,7 @@ const BudgetDialog = ({ open, onClose, onSuccess, budgetType, mode }) => {
                                                 }
                                             }}
                                         >
-                                            Add Category
+                                            Add
                                         </Button>
                                     </Grid>
                                 </Grid>

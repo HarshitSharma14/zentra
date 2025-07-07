@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import useFinanceStore from '@/stores/useFinanceStore';
+import { IndianRupee } from 'lucide-react';
 
 // Styled components for better visuals
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -233,7 +234,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                         background: 'rgba(255, 255, 255, 0.2)',
                                         backdropFilter: 'blur(10px)'
                                     }}>
-                                        <AttachMoney sx={{ fontSize: 24 }} />
+                                        <IndianRupee sx={{ fontSize: 24 }} />
                                     </Box>
                                     <Box>
                                         <Typography variant="h5" fontWeight="bold">
@@ -329,7 +330,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                         focused={focusedField === 'amount'}
                                         hasValue={!!transactionForm.amount}
                                     >
-                                        Amount ($) *
+                                        Amount (₹) *
                                     </FloatingLabel> */}
                                     <TextField
                                         label="Amount"

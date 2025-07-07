@@ -10,7 +10,7 @@ import {
     TrendingUp,
     TrendingDown,
     Calendar,
-    DollarSign,
+    IndianRupee,
     PieChart,
     AlertTriangle,
     CheckCircle,
@@ -61,9 +61,9 @@ const BudgetPage = () => {
     }, [user, fetchBudgets, fetchTransactions, initializeUser, setNavigationItems, router]);
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'INR'
         }).format(amount);
     };
 
@@ -206,7 +206,7 @@ const BudgetPage = () => {
                         <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 border border-green-200/50 dark:border-green-700/50">
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                                    <DollarSign className="h-5 w-5 text-white" />
+                                    <IndianRupee className="h-5 w-5 text-white" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold text-green-700 dark:text-green-300">

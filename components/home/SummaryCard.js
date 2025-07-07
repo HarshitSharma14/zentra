@@ -89,7 +89,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-semibold text-green-700 dark:text-green-300">
-                                                {viewMode === 'monthly' ? 'Monthly' : 'Yearly'} Income
+                                                {viewMode === 'monthly' ? 'Monthly' : 'Yearly'} Credit
                                             </p>
                                             <p className="text-2xl font-bold text-green-800 dark:text-green-200">
                                                 {formatCurrency(currentData.income)}
@@ -110,7 +110,7 @@ const SummaryCard = ({ onAddTransaction }) => {
                                         </div>
                                         <div>
                                             <p className="text-sm font-semibold text-red-700 dark:text-red-300">
-                                                {viewMode === 'monthly' ? 'Monthly' : 'Yearly'} Expenses
+                                                {viewMode === 'monthly' ? 'Monthly' : 'Yearly'} Debit
                                             </p>
                                             <p className="text-2xl font-bold text-red-800 dark:text-red-200">
                                                 {formatCurrency(currentData.spent)}

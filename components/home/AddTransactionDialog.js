@@ -291,7 +291,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                                 color: transactionForm.type === 'expense' ? '#ef4444' : '#6b7280'
                                             }} />
                                             <Typography variant="h6" fontWeight="bold" color="text.primary">
-                                                Expense
+                                                Debit
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary" textAlign="center">
                                                 Money going out
@@ -311,7 +311,7 @@ const AddTransactionDialog = ({ open, onClose, onSuccess, editTransaction = null
                                                 color: transactionForm.type === 'income' ? '#10b981' : '#6b7280'
                                             }} />
                                             <Typography variant="h6" fontWeight="bold" color="text.primary">
-                                                Income
+                                                Credit
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary" textAlign="center">
                                                 Money coming in

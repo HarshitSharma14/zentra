@@ -99,7 +99,7 @@ const TransactionHistoryPage = () => {
                                 <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 border border-green-200 dark:border-green-700/50">
                                     <div className="flex items-center justify-center space-x-2">
                                         <ArrowUp className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                        <span className="text-sm font-medium text-green-700 dark:text-green-300">Monthly Income</span>
+                                        <span className="text-sm font-medium text-green-700 dark:text-green-300">Monthly Credit</span>
                                     </div>
                                     <p className="text-lg font-bold text-green-600 dark:text-green-400 mt-1">
                                         {formatCurrency(summaryData?.monthlyIncome || 0)}
@@ -109,7 +109,7 @@ const TransactionHistoryPage = () => {
                                 <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 border border-red-200 dark:border-red-700/50">
                                     <div className="flex items-center justify-center space-x-2">
                                         <ArrowDown className="h-4 w-4 text-red-600 dark:text-red-400" />
-                                        <span className="text-sm font-medium text-red-700 dark:text-red-300">Monthly Expenses</span>
+                                        <span className="text-sm font-medium text-red-700 dark:text-red-300">Monthly Debit</span>
                                     </div>
                                     <p className="text-lg font-bold text-red-600 dark:text-red-400 mt-1">
                                         {formatCurrency(summaryData?.monthlySpent || 0)}
